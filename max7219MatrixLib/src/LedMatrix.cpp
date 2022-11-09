@@ -3,11 +3,9 @@
 #include <SPI.h>
 
 LedMatrix::LedMatrix(uint8_t noOfModulesWide, uint8_t noOfModulesHigh){
-	//byte buffer[4][8]{0};
-    //byte buffer[(noOfModulesWide + noOfModulesHigh) * ROWWIDTH]{0};
     this -> numOfModulesWide = noOfModulesWide;
     this -> numOfModulesHigh = noOfModulesHigh;
-	//screenBuffer = buffer;
+	screenBuffer = new byte[(noOfModulesWide * noOfModulesHigh) * ROWWIDTH];
 }
 void LedMatrix::init(){
 	pinMode(CSPIN, OUTPUT);
@@ -22,18 +20,17 @@ void LedMatrix::init(){
 void LedMatrix::drawPixel(byte x, byte y){
   //draw a pixel in screen memory
   	if ((x >= 0 && x < ( numOfModulesWide * ROWWIDTH)) && (y >= 0 && y < (numOfModulesHigh * COLHEIGHT))){
-	uint8_t temp = 128; //set MSB
-	uint8_t module = int(floor(x / 8));
-	//screenBuffer[(module * ROWWIDTH) + y] = screenBuffer[(module * ROWWIDTH) + y] | (temp >> int(x % 8));
-
-	screenBuffer[module][COLHEIGHT - y - 1] = screenBuffer[module][COLHEIGHT - y - 1] | (temp >> int(x % 8));
+		uint8_t temp = 128; //set MSB
+		uint8_t moduleX = int(floor(x / 8));
+		uint8_t moduleY = int(floor(y / 8));
+		screenBuffer[((moduleX * ROWWIDTH) + int(y % 8))] = screenBuffer[((moduleX * ROWWIDTH) + int(y % 8) )] | (temp >> int(x % 8));
 	}
 }
 void LedMatrix::wipeScreenBuffer(){
   //zero the whole screen buffer
 	for (byte i = 0; i < numOfModulesWide; i++){
     	for (byte j = 0; j < COLHEIGHT; j++){
-      		screenBuffer[i][j] = 0;
+      		screenBuffer[(i * ROWWIDTH) + j] = 0;
 	  	}
 	}
 }
@@ -43,7 +40,8 @@ void LedMatrix::sendScreenBuffer(){
   		SPI.beginTransaction(SPISettings(16000000, MSBFIRST, SPI_MODE0));
 		digitalWrite(CSPIN, LOW);
 			for (byte i = 0; i < numOfModulesWide; i++){
-				uint16_t temp = (j + 1) << 8 | screenBuffer[i][j];
+				uint16_t temp = (j + 1) << 8 | screenBuffer[(i * ROWWIDTH) + j];
+				//uint16_t temp = (j + 1) << 8 | screenBuffer[i][j];
     			SPI.transfer16(temp);
 			}
 		digitalWrite(CSPIN, HIGH);
@@ -62,6 +60,7 @@ void LedMatrix::updateAll(uint16_t cmd, uint8_t data){
 	SPI.endTransaction();
 }
 void LedMatrix::wipeDisplays(){
+	//note when sending column data it goes from 1-8 as a 0 means no operation
   for (byte colNumber = 1; colNumber <= COLHEIGHT; colNumber++){
     updateAll(colNumber, 0);
   }

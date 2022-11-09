@@ -30,12 +30,8 @@ class LedMatrix {
     //LED Matrix details 
     byte numOfModulesWide = 1;
     byte numOfModulesHigh = 1;
-    //don't think these are needed
-    const byte MODULES2 = 16;
-    const byte MODULES3 = 24;
-    const byte MODULES4 = 32;
     const byte ROWWIDTH = 8;
     const byte COLHEIGHT = 8;
-    byte screenBuffer[4][8];
+    byte *screenBuffer;
     };
 #endif
