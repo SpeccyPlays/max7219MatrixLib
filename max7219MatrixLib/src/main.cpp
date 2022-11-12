@@ -12,6 +12,14 @@ uint16_t delayValue = 500;
 byte willyHead[16]{
 	B00000110, B00111110, B01111100, B00110100, B00111110, B00111100, B00011000, B00111100,
   B01111110, B01101110, B01101110, B01110110, B00111100, B00011000, B00011000, B00011100 //legs standing //head
+};
+byte worm1[16]{
+	B00111111, B01000000, B10000000, B10010100, B10010100, B10010100, B10010100, B1000000,
+  B01000010, B01111100, B10000001, B10000001, B10000001, B10000000, B10000000, B1111111 
+};
+byte worm2[16]{
+	B00000000, B10000000, B01000000, B01000000, B01000000, B01000000, B01000000, B01000000,
+  B10000000, B10000000, B00000000, B01100000, B10010000, B00001000, B00100100, B11011000 
 }; 
 void setup() {
   // put your setup code here, to run once:
@@ -56,9 +64,9 @@ void loop() {
     delay(delayValue);
   }*/
   matrix.wipeScreenBuffer();
-  matrix.drawPixel(0, 0);
-  matrix.drawPixel(30, 0);
-  matrix.draw16BitArray(12, 2, willyHead);
+  matrix.draw16BitArray(23, 0, willyHead);
+  matrix.draw16BitArray(0, 0, worm1);
+  matrix.draw16BitArray(8, 0, worm2);
   matrix.sendScreenBuffer();
   delay(delayValue);
 }
