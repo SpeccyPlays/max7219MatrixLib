@@ -23,12 +23,14 @@ void LedMatrix::drawPixel(byte x, byte y){
 		uint8_t temp = 128; //set MSB
 		uint8_t moduleX = int(floor(x / 8));
 		uint8_t moduleY = int(floor(y / 8));
-		screenBuffer[((moduleX * ROWWIDTH) + int(y % 8))] = screenBuffer[((moduleX * ROWWIDTH) + int(y % 8) )] | (temp >> int(x % 8));
+		uint8_t arrayPosition = (moduleX * ROWWIDTH) + (moduleY * COLHEIGHT * numOfModulesWide) + int(y % 8);
+		screenBuffer[arrayPosition] = screenBuffer[arrayPosition] | (temp >> int(x % 8));
 	}
 }
 void LedMatrix::wipeScreenBuffer(){
   //zero the whole screen buffer
-	for (byte i = 0; i < numOfModulesWide; i++){
+	//for (byte i = 0; i < numOfModulesWide; i++){
+	for (byte i = 0; i < numOfModulesWide * numOfModulesHigh; i++){
     	for (byte j = 0; j < COLHEIGHT; j++){
       		screenBuffer[(i * ROWWIDTH) + j] = 0;
 	  	}
@@ -39,7 +41,7 @@ void LedMatrix::sendScreenBuffer(){
 	for (byte j = 0; j < COLHEIGHT; j++){
   		SPI.beginTransaction(SPISettings(16000000, MSBFIRST, SPI_MODE0));
 		digitalWrite(CSPIN, LOW);
-			for (byte i = 0; i < numOfModulesWide; i++){
+			for (byte i = 0; i < numOfModulesWide * numOfModulesHigh; i++){
 				uint16_t temp = (j + 1) << 8 | screenBuffer[(i * ROWWIDTH) + j];
 				//uint16_t temp = (j + 1) << 8 | screenBuffer[i][j];
     			SPI.transfer16(temp);
@@ -53,7 +55,8 @@ void LedMatrix::updateAll(uint16_t cmd, uint8_t data){
 	uint16_t x = (cmd << 8) | data;
 	SPI.beginTransaction(SPISettings(16000000, MSBFIRST, SPI_MODE0));
 	digitalWrite(CSPIN, LOW);
-	for (byte i = 0; i < numOfModulesWide; i++){
+	//for (byte i = 0; i < numOfModulesWide; i++){
+	for (byte i = 0; i < numOfModulesWide * numOfModulesHigh; i++){
 	  SPI.transfer16(x);
 	}
 	digitalWrite(CSPIN, HIGH);
@@ -205,6 +208,30 @@ void LedMatrix::plotFilledSquare(byte x, byte y, byte width, byte height){
 	for (byte i = 0; i < height; i++){
 		for (byte j = 0; j < width; j++){
 			drawPixel(x + j, y + i);
+		}
+	}
+}
+void LedMatrix::draw8BitArray(byte xStart, byte yStart, byte array[]){
+	/*
+	Draws a bitmap array that is 8 columns high on the screen
+	*/
+	for (byte i = 0; i < COLHEIGHT; i++){
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (array[i] & (128 >> j )){
+				drawPixel(xStart + j, yStart + i);
+			}
+		}
+	}
+}
+void LedMatrix::draw16BitArray(byte xStart, byte yStart, byte array[]){
+	/*
+	Draws a bitmap array that is 8 columns high on the screen
+	*/
+	for (byte i = 0; i < COLHEIGHT * 2; i++){
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (array[i] & (128 >> j )){
+				drawPixel(xStart + j, yStart + i);
+			}
 		}
 	}
 };

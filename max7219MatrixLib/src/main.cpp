@@ -7,6 +7,12 @@ Think it's the way I'm sending them
 */
 
 LedMatrix matrix(4, 3);
+uint16_t delayValue = 500;
+
+byte willyHead[16]{
+	B00000110, B00111110, B01111100, B00110100, B00111110, B00111100, B00011000, B00111100,
+  B01111110, B01101110, B01101110, B01110110, B00111100, B00011000, B00011000, B00011100 //legs standing //head
+}; 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
@@ -14,31 +20,45 @@ void setup() {
 }
 
 void loop() {
-  for (byte i = 0; i < 32;i ++){
-    matrix.wipeScreenBuffer();
-  matrix.drawPixel(i, 0);
-  matrix.sendScreenBuffer();
-  delay(1000);
-}
-  // put your main code here, to run repeatedly:
-  /*matrix.wipeScreenBuffer();
-  for (uint8_t count = 0; count < 32; count +=4){
-    matrix.plotLine(16, 0, count, 7);
+  matrix.wipeScreenBuffer();
+  /*for (uint8_t count = 0; count < 32; count +=8){
+    matrix.plotLine(16, 12, count, 23);
     matrix.sendScreenBuffer();
-    delay(100);
+    delay(delayValue);
+  }
+  for (uint8_t count = 24; count > 0; count -=8){
+    matrix.plotLine(16, 12, 32, count);
+    matrix.sendScreenBuffer();
+    delay(delayValue);
+  }
+  for (uint8_t count = 32; count > 0; count -=8){
+    matrix.plotLine(16, 12, count, 0);
+    matrix.sendScreenBuffer();
+    delay(delayValue);
+  }
+  for (uint8_t count = 0; count < 24; count +=8){
+    matrix.plotLine(16, 12, 0, count);
+    matrix.sendScreenBuffer();
+    delay(delayValue);
   }
   matrix.wipeScreenBuffer();
-  for (byte count = 0; count < 10; count ++){
-    matrix.plotCircle(random(0, 31), random(0, 7), random(2, 7));
+  for (byte count = 0; count < 20; count ++){
+    matrix.plotCircle(random(0, 31), random(0, 23), random(2, 7));
     matrix.sendScreenBuffer();
     //matrix.wipeScreenBuffer();
-    delay(100);
+    delay(delayValue);
   }
   matrix.wipeScreenBuffer();
-  for (byte count = 0; count < 10; count ++){
-    matrix.plotSquare(random(0, 31), random(0, 7), random(2, 32), random(2, 7));
+  for (byte count = 0; count < 20; count ++){
+    matrix.plotSquare(random(0, 31), random(0, 23), random(2, 32), random(2, 23));
     matrix.sendScreenBuffer();
     //matrix.wipeScreenBuffer();
-    delay(100);
+    delay(delayValue);
   }*/
+  matrix.wipeScreenBuffer();
+  matrix.drawPixel(0, 0);
+  matrix.drawPixel(30, 0);
+  matrix.draw16BitArray(12, 2, willyHead);
+  matrix.sendScreenBuffer();
+  delay(delayValue);
 }

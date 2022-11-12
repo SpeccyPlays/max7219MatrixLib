@@ -18,6 +18,8 @@ class LedMatrix {
     void plotCircleThick(byte xm, byte ym, uint8_t r);
     void plotSquare(byte x, byte y, byte width, byte height);
     void plotFilledSquare(byte x, byte y, byte width, byte height);
+    void draw8BitArray(byte xStart, byte yStart, byte array[]);
+    void draw16BitArray(byte xStart, byte yStart, byte array[]);
     private:
     const uint8_t NO_OP = 0x00;
     const uint8_t DECODE_MODE = 9;
