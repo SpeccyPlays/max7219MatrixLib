@@ -1,3 +1,22 @@
+/*
+This library is for the Max7219 controlled single colour Led Matrixes
+As they can be daisy chained, I created this library to be able to quickly send data to them
+and to keep the library size small.
+I also created it to be able to use x, y co-ordinates like you would a TFT screen
+X -> left to right, with 0 on the left
+Y -> top to bottom with 0 at the top
+
+It uses standard Aruino Uno SPI pins :
+10 - CS
+11 - MOSI
+13 - CLK
+
+The first matrix will need to be connected to the Arduino so the matrix input is on the right hand side
+Any other matrixes will need to be above this
+Only works with squares, i.e, not possible to have a row with 3 modules then a row with 2 modules
+
+*/
+
 #include "LedMatrix.h"
 #include <Arduino.h>
 #include <SPI.h>
@@ -29,7 +48,6 @@ void LedMatrix::drawPixel(byte x, byte y){
 }
 void LedMatrix::wipeScreenBuffer(){
   //zero the whole screen buffer
-	//for (byte i = 0; i < numOfModulesWide; i++){
 	for (byte i = 0; i < numOfModulesWide * numOfModulesHigh; i++){
     	for (byte j = 0; j < COLHEIGHT; j++){
       		screenBuffer[(i * ROWWIDTH) + j] = 0;
@@ -43,7 +61,6 @@ void LedMatrix::sendScreenBuffer(){
 		digitalWrite(CSPIN, LOW);
 			for (byte i = 0; i < numOfModulesWide * numOfModulesHigh; i++){
 				uint16_t temp = (j + 1) << 8 | screenBuffer[(i * ROWWIDTH) + j];
-				//uint16_t temp = (j + 1) << 8 | screenBuffer[i][j];
     			SPI.transfer16(temp);
 			}
 		digitalWrite(CSPIN, HIGH);
@@ -55,7 +72,6 @@ void LedMatrix::updateAll(uint16_t cmd, uint8_t data){
 	uint16_t x = (cmd << 8) | data;
 	SPI.beginTransaction(SPISettings(16000000, MSBFIRST, SPI_MODE0));
 	digitalWrite(CSPIN, LOW);
-	//for (byte i = 0; i < numOfModulesWide; i++){
 	for (byte i = 0; i < numOfModulesWide * numOfModulesHigh; i++){
 	  SPI.transfer16(x);
 	}
