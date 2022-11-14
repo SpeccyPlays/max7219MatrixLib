@@ -80,6 +80,7 @@ void LedMatrix::updateAll(uint16_t cmd, uint8_t data){
 }
 void LedMatrix::wipeDisplays(){
 	//note when sending column data it goes from 1-8 as a 0 means no operation
+	//This zeros the displays memory, rather than the buffer in this code
   for (byte colNumber = 1; colNumber <= COLHEIGHT; colNumber++){
     updateAll(colNumber, 0);
   }
@@ -110,8 +111,7 @@ void LedMatrix::plotLine(byte x1, byte y1, byte x2, byte y2){
 					y=y-1; 
 					} 
 				px=px+2*(dy1-dx1); 
-				} 
-//			delay(0); 
+				}  
 			drawPixel(x,y); 
 			} 
 		} 
@@ -131,7 +131,6 @@ void LedMatrix::plotLine(byte x1, byte y1, byte x2, byte y2){
 					} 
 				py=py+2*(dx1-dy1); 
 				} 
-//			delay(0); 
 			drawPixel(x,y); 
 			} 
 		} 
@@ -146,28 +145,28 @@ void LedMatrix::plotCircleThick(byte xm, byte ym, uint8_t r){
 	while (y >= x){
 		byte newX = xm+x;
 		byte newY = ym+y;
-		makePointsThicc(newX, newY);
+		makePointsThick(newX, newY);
 		newX = xm-x;
 		newY = ym+y;
-		makePointsThicc(newX, newY);
+		makePointsThick(newX, newY);
 		newX = xm+x;
 		newY = ym-y;
-		makePointsThicc(newX, newY);
+		makePointsThick(newX, newY);
 		newX = xm-x;
 		newY = ym-y;
-		makePointsThicc(newX, newY);
+		makePointsThick(newX, newY);
 		newX = xm+y;
 		newY = ym+x;
-		makePointsThicc(newX, newY);
+		makePointsThick(newX, newY);
 		newX = xm-y;
 		newY = ym+x;
-		makePointsThicc(newX, newY);
+		makePointsThick(newX, newY);
 		newX = xm+y;
 		newY = ym-x;
-		makePointsThicc(newX, newY);
+		makePointsThick(newX, newY);
 		newX = xm-y;
 		newY = ym-x;
-		makePointsThicc(newX, newY);
+		makePointsThick(newX, newY);
 		x++;
 		if (d > 0){
 			y--;
@@ -178,7 +177,7 @@ void LedMatrix::plotCircleThick(byte xm, byte ym, uint8_t r){
 		}
 	} 
 }
-void LedMatrix::makePointsThicc(byte newX, byte newY){
+void LedMatrix::makePointsThick(byte newX, byte newY){
 // Draws all the way around a point
 	drawPixel(newX, newY);
 	drawPixel(newX - 1, newY);
@@ -241,9 +240,21 @@ void LedMatrix::draw8BitArray(byte xStart, byte yStart, byte array[]){
 }
 void LedMatrix::draw16BitArray(byte xStart, byte yStart, byte array[]){
 	/*
-	Draws a bitmap array that is 8 columns high on the screen
+	Draws a bitmap array that is 16 columns high on the screen
 	*/
 	for (byte i = 0; i < COLHEIGHT * 2; i++){
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (array[i] & (128 >> j )){
+				drawPixel(xStart + j, yStart + i);
+			}
+		}
+	}
+}
+void LedMatrix::drawCustomSizeArray(byte xStart, byte yStart, byte array[], byte arraySize){
+	/*
+	Draws a bitmap array that is 16 columns high on the screen
+	*/
+	for (byte i = 0; i < arraySize; i++){
 		for (byte j = 0; j < ROWWIDTH; j++){
 			if (array[i] & (128 >> j )){
 				drawPixel(xStart + j, yStart + i);
