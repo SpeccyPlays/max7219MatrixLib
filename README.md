@@ -67,4 +67,6 @@ Usage Examples
 --------------
 [MPU6050 controlled LED Sand effect](https://youtu.be/VmF_7_NJ_H0)
 
-![Sprites image](https://ibb.co/1s3WGxz)
+Bitmaps image
+
+![Sprites image](https://i.ibb.co/1s3WGxz/20221112-190850.jpg)
