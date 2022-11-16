@@ -56,6 +56,9 @@ __Note, each row must have the same number of matrixes. It's not possible with t
 
 Usage
 -----
+
+Copy the .h and .cpp files from max7219MatrixLib/src/ to your project directory and #include them to use the library
+
 The usual drawPixel, plotLine, plotSquare, plotCircle options are here.
 
 However, I've made it so that you can easily displays your own byte based (e.g, B10000001) bitmap arrays for ease of displaying simple pixel art.
