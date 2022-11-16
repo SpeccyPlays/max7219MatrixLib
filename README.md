@@ -63,7 +63,8 @@ There is an option for 8bit, 16bit (these refer to the amount of columns and sti
 
 These can be easily combined to create much larger and impressive sprites
 
-Examples
---------
+Usage Examples
+--------------
+[MPU6050 controlled LED Sand effect](https://youtu.be/VmF_7_NJ_H0)
 
-
+![Sprites image](https://ibb.co/1s3WGxz)
