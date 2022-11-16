@@ -59,5 +59,11 @@ Usage
 The usual drawPixel, plotLine, plotSquare, plotCircle options are here.
 
 However, I've made it so that you can easily displays your own byte based (e.g, B10000001) bitmap arrays for ease of displaying simple pixel art.
-There is an option for 8bit, 16bit (these refer to the amount of columns and still require a bit array) or a custom column amount
+There is an option for 8bit, 16bit (these refer to the amount of columns and still require a byte array) or a custom column amount.
+
+These can be easily combined to create much larger and impressive sprites
+
+Examples
+--------
+
 
