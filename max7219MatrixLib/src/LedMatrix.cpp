@@ -226,9 +226,9 @@ void LedMatrix::plotFilledSquare(byte x, byte y, byte width, byte height){
 		}
 	}
 }
-void LedMatrix::draw8BitArray(byte xStart, byte yStart, byte array[]){
+void LedMatrix::draw8BitArray(byte xStart, byte yStart, byte *array){
 	/*
-	Draws a bitmap array that is 8 columns high on the screen
+	Draws a bitmap array stored in flash memory that is 8 columns high on the screen
 	*/
 	for (byte i = 0; i < COLHEIGHT; i++){
 		for (byte j = 0; j < ROWWIDTH; j++){
@@ -238,27 +238,30 @@ void LedMatrix::draw8BitArray(byte xStart, byte yStart, byte array[]){
 		}
 	}
 }
-void LedMatrix::draw16BitArray(byte xStart, byte yStart, byte array[]){
+void LedMatrix::draw16BitArray(byte xStart, byte yStart, byte const *array){
 	/*
-	Draws a bitmap array that is 16 columns high on the screen
+	Draws a bitmap array stored in flash memory that is 16 columns high on the screen
 	*/
 	for (byte i = 0; i < COLHEIGHT * 2; i++){
 		for (byte j = 0; j < ROWWIDTH; j++){
-			if (array[i] & (128 >> j )){
+			if (pgm_read_byte(&array[i]) & (128 >> j )){
 				drawPixel(xStart + j, yStart + i);
 			}
 		}
 	}
 }
-void LedMatrix::drawCustomSizeArray(byte xStart, byte yStart, byte array[], byte arraySize){
+void LedMatrix::drawCustomSizeArray(byte xStart, byte yStart, const byte *array, byte startAt, byte chunkSize){
 	/*
-	Draws a bitmap array that is 16 columns high on the screen
+	Draws a bitmap array stored in flash memory that is a user defined number of columns
+	The start at is because I wanted to create a massive sprite in a 1d array and this allowed me to load chuncks in different positions
 	*/
-	for (byte i = 0; i < arraySize; i++){
+	byte yCounter = 0; //used for y position as if we use i it can have massive values
+	for (byte i = startAt; i < (startAt + chunkSize); i++){
 		for (byte j = 0; j < ROWWIDTH; j++){
-			if (array[i] & (128 >> j )){
-				drawPixel(xStart + j, yStart + i);
+			if (pgm_read_byte(&array[i]) & (128 >> j )){
+				drawPixel(xStart + j, yStart + yCounter);
 			}
 		}
+		yCounter++;
 	}
 };

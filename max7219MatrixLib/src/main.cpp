@@ -1,40 +1,16 @@
 #include <Arduino.h>
 #include "LedMatrix.h"
+#include "sprites.h"
 
 
 
 LedMatrix matrix(4, 3);
 uint16_t delayValue = 10;
 byte count = 0;
+void graphicsDemo();
+void manicMinerSprites();
 
-byte willySprite[16]{
-	B00000110, B00111110, B01111100, B00110100, B00111110, B00111100, B00011000, B00111100,
-  B01111110, B01101110, B01101110, B01110110, B00111100, B00011000, B00011000, B00011100 //legs standing //head
-};
-byte worm1[16]{
-	B00111111, B01000000, B10000000, B10010100, B10010100, B10010100, B10010100, B1000000,
-  B01000010, B01111100, B10000001, B10000001, B10000001, B10000000, B10000000, B1111111 
-};
-byte worm2[16]{
-	B00000000, B10000000, B01000000, B01000000, B01000000, B01000000, B01000000, B01000000,
-  B10000000, B10000000, B00000000, B01100000, B10010000, B00001000, B00100100, B11011000 
-};
-byte trumpetFacel[16]{
-		B00001111, B00011111, B00111100, B00011100, B10001111, B01011111, B11111111, B01011111,
-		B10011111, B00001111, B00001111, B10011100, B01111000, B00110000, B00010000, B00001000
-}; //bottom left
-byte trumpetFacer[16]{
-		B00001000, B10011000, B11111000, B11111000, B10011000, B11101000, B11110000, B10000000,
-		B11110000, B11100000, B11100000, B11100010, B01110100, B00111000, B00010000, B00100000 //bottom right
-};
-byte trumpetFace2l[16]{
-		B00001111, B00011111, B00111100, B00011100, B00001111, B00011111, B11111111, B00011111,
-		B00011111, B00001111, B00001111, B00000011, B00000011, B00000011, B00000011, B00000111
-}; //bottom left
-byte trumpetFace2r[16]{
-		B00010000, B10110000, B11110000, B11110000, B10110000, B10010000, B11100000, B11110000,
-		B11110000, B11100000, B11100000, B00000000, B00000000, B00000000, B00000000, B11000000 //bottom  right
-};
+;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
@@ -42,9 +18,30 @@ void setup() {
 }
 
 void loop() {
-  delayValue = 50;
+  delayValue = 100;
+  
   matrix.wipeScreenBuffer();
-  /*for (uint8_t count = 0; count < 32; count +=8){
+  for (byte x = 0; x <= 16; x += 8){
+    matrix.drawCustomSizeArray(x, 0, megaMan1, x * 3, 24);
+  }
+  matrix.sendScreenBuffer();
+  delay(delayValue);
+  matrix.wipeScreenBuffer();
+  for (byte x = 0; x <= 16; x += 8){
+    matrix.drawCustomSizeArray(x, 0, megaMan2, x * 3, 24);
+  }
+  matrix.sendScreenBuffer();
+  delay(delayValue);
+  matrix.wipeScreenBuffer();
+  for (byte x = 0; x <= 16; x += 8){
+    matrix.drawCustomSizeArray(x, 0, megaMan3, x * 3, 24);
+  }
+  matrix.sendScreenBuffer();
+  delay(delayValue);
+}
+void graphicsDemo(){
+  matrix.wipeScreenBuffer();
+  for (uint8_t count = 0; count < 32; count +=8){
     matrix.plotLine(16, 12, count, 23);
     matrix.sendScreenBuffer();
     delay(delayValue);
@@ -77,8 +74,10 @@ void loop() {
     matrix.sendScreenBuffer();
     //matrix.wipeScreenBuffer();
     delay(delayValue);
-  }*/
-  matrix.wipeScreenBuffer();
+  }
+}
+void manicMinerSprites(){
+matrix.wipeScreenBuffer();
   if (count == 0){
       matrix.draw16BitArray(4, 0, trumpetFacel);
     matrix.draw16BitArray(12, 0, trumpetFacer);

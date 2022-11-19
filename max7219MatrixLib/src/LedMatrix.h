@@ -18,9 +18,9 @@ class LedMatrix {
     void plotCircleThick(byte xm, byte ym, uint8_t r);
     void plotSquare(byte x, byte y, byte width, byte height);
     void plotFilledSquare(byte x, byte y, byte width, byte height);
-    void draw8BitArray(byte xStart, byte yStart, byte array[]);
-    void draw16BitArray(byte xStart, byte yStart, byte array[]);
-    void drawCustomSizeArray(byte xStart, byte yStart, byte array[], byte arraySize);
+    void draw8BitArray(byte xStart, byte yStart, byte *array);
+    void draw16BitArray(byte xStart, byte yStart, const byte *array);
+    void drawCustomSizeArray(byte xStart, byte yStart, const byte *array, byte startAt, byte chunkSize);
     private:
     //below are the command functions for the MAX7219
     //only the bare minimum is included
