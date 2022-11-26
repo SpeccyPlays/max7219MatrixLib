@@ -15,6 +15,8 @@ The first matrix will need to be connected to the Arduino so the matrix input is
 Any other matrixes will need to be above this
 Only works with squares, i.e, not possible to have a row with 3 modules then a row with 2 modules
 
+Any sprite arrays have to be stored on flash using PROGMEM
+
 */
 
 #include "LedMatrix.h"
@@ -226,7 +228,7 @@ void LedMatrix::plotFilledSquare(byte x, byte y, byte width, byte height){
 		}
 	}
 }
-void LedMatrix::draw8BitArray(byte xStart, byte yStart, byte *array){
+void LedMatrix::draw8ColumnArray(byte xStart, byte yStart, byte *array){
 	/*
 	Draws a bitmap array stored in flash memory that is 8 columns high on the screen
 	*/
@@ -238,7 +240,7 @@ void LedMatrix::draw8BitArray(byte xStart, byte yStart, byte *array){
 		}
 	}
 }
-void LedMatrix::draw16BitArray(byte xStart, byte yStart, byte const *array){
+void LedMatrix::draw16ColumnArray(byte xStart, byte yStart, byte const *array){
 	/*
 	Draws a bitmap array stored in flash memory that is 16 columns high on the screen
 	*/
@@ -250,7 +252,7 @@ void LedMatrix::draw16BitArray(byte xStart, byte yStart, byte const *array){
 		}
 	}
 }
-void LedMatrix::drawCustomSizeArray(byte xStart, byte yStart, const byte *array, byte startAt, byte chunkSize){
+void LedMatrix::drawCustomHeightArray(byte xStart, byte yStart, const byte *array, byte startAt, byte chunkSize){
 	/*
 	Draws a bitmap array stored in flash memory that is a user defined number of columns
 	The start at is because I wanted to create a massive sprite in a 1d array and this allowed me to load chuncks in different positions
@@ -263,5 +265,28 @@ void LedMatrix::drawCustomSizeArray(byte xStart, byte yStart, const byte *array,
 			}
 		}
 		yCounter++;
+	}
+}
+void LedMatrix::drawRotatedArray(byte xStart, byte yStart, byte const *array, uint8_t rotationValue){
+	/*
+	Starts drawing at x, y position but rotates around center point of sprite
+	looks terrible
+	*/
+	if (rotationValue >= 0 && rotationValue <= 360){
+		float angleInRad = (rotationValue * 3.14159265358979323846) / 180;
+		float s = sin(angleInRad);
+		float c = cos(angleInRad);
+		for (byte i = 0; i < COLHEIGHT * 2; i++){
+			for (byte j = 0; j < ROWWIDTH; j++){
+				if (pgm_read_byte(&array[i]) & (128 >> j )){
+					//float newX = ((xStart + j) - (xStart + 4)) * c - ((yStart + i) - (yStart + 8)) * s;
+					//float newY = ((xStart + j) - (xStart + 4)) * s + ((yStart + i) - (yStart + 8)) * c;
+					//drawPixel(int(newX) + (xStart + 4), int(newY) + (yStart + 8)); //round float and convert to int
+					float newX = ((xStart + j) - 16) * c - ((yStart + i) - 12) * s;
+					float newY = ((xStart + j) - 16 ) * s + ((yStart + i) - 12) * c;
+					drawPixel(int(newX) + 16, int(newY) + 12); 
+				}
+			}
+		}
 	}
 };
