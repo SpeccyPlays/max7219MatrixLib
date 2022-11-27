@@ -267,26 +267,33 @@ void LedMatrix::drawCustomHeightArray(byte xStart, byte yStart, const byte *arra
 		yCounter++;
 	}
 }
-void LedMatrix::drawRotatedArray(byte xStart, byte yStart, byte const *array, uint8_t rotationValue){
+void LedMatrix::drawRotatedArray(byte xStart, byte yStart, byte const *array, int16_t rotationValue){
 	/*
-	Starts drawing at x, y position but rotates around center point of sprite
-	looks terrible
+	Starts drawing at x, y position but rotates around center point of sprite 8 pixels wide x 16 high
+	Runs, very slowly due to all floating point calculations
+	Better if done by jumping 30 degress each time
 	*/
-	if (rotationValue >= 0 && rotationValue <= 360){
+	if (rotationValue >= -180 && rotationValue <= 180){
 		float angleInRad = (rotationValue * 3.14159265358979323846) / 180;
+		//float s = sinValues[rotationValue + 180];
+		//float c = cosValues[rotationValue + 180];
 		float s = sin(angleInRad);
 		float c = cos(angleInRad);
 		for (byte i = 0; i < COLHEIGHT * 2; i++){
 			for (byte j = 0; j < ROWWIDTH; j++){
 				if (pgm_read_byte(&array[i]) & (128 >> j )){
-					//float newX = ((xStart + j) - (xStart + 4)) * c - ((yStart + i) - (yStart + 8)) * s;
-					//float newY = ((xStart + j) - (xStart + 4)) * s + ((yStart + i) - (yStart + 8)) * c;
-					//drawPixel(int(newX) + (xStart + 4), int(newY) + (yStart + 8)); //round float and convert to int
-					float newX = ((xStart + j) - 16) * c - ((yStart + i) - 12) * s;
-					float newY = ((xStart + j) - 16 ) * s + ((yStart + i) - 12) * c;
-					drawPixel(int(newX) + 16, int(newY) + 12); 
+					float newX = ((xStart + j) - (xStart + 4.5)) * c - ((yStart + i) - (yStart + 8.5)) * s;
+					float newY = ((xStart + j) - (xStart + 4.5)) * s + ((yStart + i) - (yStart + 8.5)) * c;
+					drawPixel(int(newX + xStart + 4.5), int(newY + yStart + 8.5)); //round float and convert to int
 				}
 			}
 		}
 	}
-};
+}
+/*void LedMatrix::calculateAlgebraValues(){
+	//Was trying to precalculate the cos and sin values for speed but takes way too much stack space
+	for (int16_t angle = -180; angle < 180; angle++){
+		cosValues[angle + 180] = cos((angle * 3.14159265358979323846) / 180);
+		sinValues[angle + 180] = sin((angle * 3.14159265358979323846) / 180);
+	}
+}*/;

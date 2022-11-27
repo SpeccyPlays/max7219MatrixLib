@@ -21,7 +21,8 @@ class LedMatrix {
     void draw8ColumnArray(byte xStart, byte yStart, byte *array);
     void draw16ColumnArray(byte xStart, byte yStart, const byte *array);
     void drawCustomHeightArray(byte xStart, byte yStart, const byte *array, byte startAt, byte chunkSize);
-    void drawRotatedArray(byte xStart, byte yStart, const byte *array, uint8_t rotationValue);
+    void drawRotatedArray(byte xStart, byte yStart, const byte *array, int16_t rotationValue);
+    //void calculateAlgebraValues();
     private:
     //below are the command functions for the MAX7219
     //only the bare minimum is included
@@ -39,5 +40,7 @@ class LedMatrix {
     const byte ROWWIDTH = 8;
     const byte COLHEIGHT = 8;
     byte *screenBuffer;
+    //float cosValues[360] PROGMEM;
+    //float sinValues[360] PROGMEM;
     };
 #endif

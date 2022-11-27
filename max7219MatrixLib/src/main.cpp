@@ -2,20 +2,34 @@
 #include "LedMatrix.h"
 #include "sprites.h"
 LedMatrix matrix(4, 3);
-uint16_t delayValue = 150;
+uint16_t delayValue = 100;
 byte count = 0;
 void graphicsDemo();
-void manicMinerSprites();
 void customSpriteDemo();
+void spriteRotationDemo();
 const byte *megaMan[6] ={megaMan1, megaMan2, megaMan3, megaMan4, megaMan5, megaMan6};
 void setup() {
   Serial.begin(115200);
   matrix.init();
+  
 }
 void loop() {
-customSpriteDemo();
+  graphicsDemo();
+  customSpriteDemo();
+  spriteRotationDemo();
 }
-
+void spriteRotationDemo(){
+  byte counter = 0;
+  for (byte j = 0; j < 3; j++){
+    for (int16_t i = -180; i < 180; i+= 30){
+      matrix.wipeScreenBuffer();
+      matrix.drawRotatedArray(counter, 4, willySprite, i);
+      matrix.sendScreenBuffer();
+      counter ++;
+      delay(delayValue);
+    }
+  }
+};
 void customSpriteDemo(){
     //go through all the sprites
   for (byte i = 0; i < sizeof(megaMan)/sizeof(megaMan[0]); i++){
@@ -49,6 +63,9 @@ void customSpriteDemo(){
   delay(delayValue);
 }
 void graphicsDemo(){
+  /*
+  Demo for the standard graphics type drawing stuff
+  */
   matrix.wipeScreenBuffer();
   for (uint8_t count = 0; count < 32; count +=8){
     matrix.plotLine(16, 12, count, 23);
@@ -84,21 +101,4 @@ void graphicsDemo(){
     //matrix.wipeScreenBuffer();
     delay(delayValue);
   }
-}
-void manicMinerSprites(){
-matrix.wipeScreenBuffer();
-  if (count == 0){
-    matrix.draw16ColumnArray(4, 0, trumpetFacel);
-    matrix.draw16ColumnArray(12, 0, trumpetFacer);
-    count ++;
-  }
-  else {
-    matrix.draw16ColumnArray(4, 0, trumpetFace2l);
-    matrix.draw16ColumnArray(12, 0, trumpetFace2r);
-    count = 0;
-  }
-  matrix.draw16ColumnArray(14, 8, willySprite);
-  matrix.sendScreenBuffer();
-  delayValue = 200;
-  delay(delayValue);
 }
