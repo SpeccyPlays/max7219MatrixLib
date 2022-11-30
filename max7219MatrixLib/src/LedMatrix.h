@@ -3,6 +3,10 @@
 #define LEDMATRIX_H
 #include <Arduino.h>
 #include <SPI.h>
+//below are the angles (in degrees) -180 to 150 in 30 degree steps
+//they were converting to radians before sin(angle) and cos(angle)
+const float cosValues[12] PROGMEM{-1.00,-0.87,-0.50,-0.00,0.50,0.87,1.00,0.87,0.50,-0.00,-0.50,-0.87};
+const float sinValues[12] PROGMEM{0.00,-0.50,-0.87,-1.00,-0.87,-0.50,0.00,0.50,0.87,1.00,0.87, 0.50};
 class LedMatrix {
     public:
     LedMatrix(uint8_t noOfModulesWide, uint8_t noOfModulesHigh);
@@ -21,8 +25,8 @@ class LedMatrix {
     void draw8ColumnArray(byte xStart, byte yStart, byte *array);
     void draw16ColumnArray(byte xStart, byte yStart, const byte *array);
     void drawCustomHeightArray(byte xStart, byte yStart, const byte *array, byte startAt, byte chunkSize);
-    void drawRotatedArray(byte xStart, byte yStart, const byte *array, int16_t rotationValue);
-    //void calculateAlgebraValues();
+    void drawRotated16ColArray(byte xStart, byte yStart, const byte *array, byte rotationValue);
+    void drawRotated16ColArray(byte xStart, byte yStart, float originX, float originY, const byte *array, byte rotationValue);
     private:
     //below are the command functions for the MAX7219
     //only the bare minimum is included
@@ -40,7 +44,5 @@ class LedMatrix {
     const byte ROWWIDTH = 8;
     const byte COLHEIGHT = 8;
     byte *screenBuffer;
-    //float cosValues[360] PROGMEM;
-    //float sinValues[360] PROGMEM;
     };
 #endif

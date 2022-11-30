@@ -11,19 +11,19 @@ const byte *megaMan[6] ={megaMan1, megaMan2, megaMan3, megaMan4, megaMan5, megaM
 void setup() {
   Serial.begin(115200);
   matrix.init();
-  
-}
-void loop() {
   graphicsDemo();
   customSpriteDemo();
   spriteRotationDemo();
 }
+void loop() {
+
+}
 void spriteRotationDemo(){
   byte counter = 0;
   for (byte j = 0; j < 3; j++){
-    for (int16_t i = -180; i < 180; i+= 30){
+    for (int16_t i = 0; i < 12; i++){
       matrix.wipeScreenBuffer();
-      matrix.drawRotatedArray(counter, 4, willySprite, i);
+      matrix.drawRotated16ColArray(counter, 4, willySprite, i);
       matrix.sendScreenBuffer();
       counter ++;
       delay(delayValue);

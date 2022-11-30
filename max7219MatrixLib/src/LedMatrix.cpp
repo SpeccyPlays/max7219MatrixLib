@@ -11,7 +11,7 @@ It uses standard Aruino Uno SPI pins :
 11 - MOSI
 13 - CLK
 
-The first matrix will need to be connected to the Arduino so the matrix input is on the right hand side
+The first matrix will need to be connected to the Arduino so the matrix input is on the (bottom) right hand side
 Any other matrixes will need to be above this
 Only works with squares, i.e, not possible to have a row with 3 modules then a row with 2 modules
 
@@ -244,7 +244,7 @@ void LedMatrix::draw16ColumnArray(byte xStart, byte yStart, byte const *array){
 	/*
 	Draws a bitmap array stored in flash memory that is 16 columns high on the screen
 	*/
-	for (byte i = 0; i < COLHEIGHT * 2; i++){
+	for (byte i = 0; i < (COLHEIGHT << 1); i++){ //use bitshift instead of * 2
 		for (byte j = 0; j < ROWWIDTH; j++){
 			if (pgm_read_byte(&array[i]) & (128 >> j )){
 				drawPixel(xStart + j, yStart + i);
@@ -267,19 +267,15 @@ void LedMatrix::drawCustomHeightArray(byte xStart, byte yStart, const byte *arra
 		yCounter++;
 	}
 }
-void LedMatrix::drawRotatedArray(byte xStart, byte yStart, byte const *array, int16_t rotationValue){
+void LedMatrix::drawRotated16ColArray(byte xStart, byte yStart, byte const *array, byte rotationValue){
 	/*
 	Starts drawing at x, y position but rotates around center point of sprite 8 pixels wide x 16 high
-	Runs, very slowly due to all floating point calculations
-	Better if done by jumping 30 degress each time
+	Origin is fixed to center of sprite
 	*/
-	if (rotationValue >= -180 && rotationValue <= 180){
-		float angleInRad = (rotationValue * 3.14159265358979323846) / 180;
-		//float s = sinValues[rotationValue + 180];
-		//float c = cosValues[rotationValue + 180];
-		float s = sin(angleInRad);
-		float c = cos(angleInRad);
-		for (byte i = 0; i < COLHEIGHT * 2; i++){
+	if (rotationValue >= 0 && rotationValue < 12){
+		float s = pgm_read_float_near(&sinValues[rotationValue]);
+		float c = pgm_read_float_near(&cosValues[rotationValue]);
+		for (byte i = 0; i < (COLHEIGHT << 1); i++){
 			for (byte j = 0; j < ROWWIDTH; j++){
 				if (pgm_read_byte(&array[i]) & (128 >> j )){
 					float newX = ((xStart + j) - (xStart + 4.5)) * c - ((yStart + i) - (yStart + 8.5)) * s;
@@ -290,10 +286,27 @@ void LedMatrix::drawRotatedArray(byte xStart, byte yStart, byte const *array, in
 		}
 	}
 }
-/*void LedMatrix::calculateAlgebraValues(){
-	//Was trying to precalculate the cos and sin values for speed but takes way too much stack space
-	for (int16_t angle = -180; angle < 180; angle++){
-		cosValues[angle + 180] = cos((angle * 3.14159265358979323846) / 180);
-		sinValues[angle + 180] = sin((angle * 3.14159265358979323846) / 180);
+void LedMatrix::drawRotated16ColArray(byte xStart, byte yStart, float originX, float originY, byte const *array, byte rotationValue){
+	/*
+	##UNTESTED##
+	Starts drawing at x, y position but rotates around center point of sprite 8 pixels wide x 16 high
+	Allows the origin point to be choosen, relative to the x and y start points
+	So to rotate around the center of a 8 wide 16 high sprite the originX will be 4.5 (halway point between 1 and 8)
+	originY would be 8.5 (half way point between 1 and 16 )
+	*/
+	if (rotationValue >= 0 && rotationValue < 12){
+		float s = pgm_read_float_near(&sinValues[rotationValue]);
+		float c = pgm_read_float_near(&cosValues[rotationValue]);
+		for (byte i = 0; i < (COLHEIGHT << 1); i++){
+		//for (byte i = 0; i < COLHEIGHT * 2; i++){
+			for (byte j = 0; j < ROWWIDTH; j++){
+				if (pgm_read_byte(&array[i]) & (128 >> j )){
+					float newX = ((xStart + j) - (xStart + originX)) * c - ((yStart + i) - (yStart + originY)) * s;
+					float newY = ((xStart + j) - (xStart + originX)) * s + ((yStart + i) - (yStart + originY)) * c;
+					drawPixel(int(newX + xStart + originX), int(newY + yStart + originY)); //round float and convert to int
+				}
+			}
+		}
 	}
-}*/;
+}
+;
