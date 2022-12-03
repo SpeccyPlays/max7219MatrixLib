@@ -6,26 +6,55 @@ uint16_t delayValue = 100;
 byte count = 0;
 void graphicsDemo();
 void customSpriteDemo();
+void spriteScalingDemo();
 void spriteRotationDemo();
 const byte *megaMan[6] ={megaMan1, megaMan2, megaMan3, megaMan4, megaMan5, megaMan6};
 void setup() {
+  randomSeed(A0);
   Serial.begin(115200);
   matrix.init();
-  //graphicsDemo();
-  //customSpriteDemo();
-  //spriteRotationDemo();
+  graphicsDemo();
+  customSpriteDemo();
+  spriteScalingDemo();
+  spriteRotationDemo();
 }
 void loop() {
-  for (float i = 4.0; i >= -4.0; i -= 0.1){
+
+}
+void spriteScalingDemo(){
+  for (float i = 1.0; i >= -1.0; i -= 0.1){
     matrix.wipeScreenBuffer();
-    matrix.drawScale8ColArray(16, 8, i, 1.0, willySprite);
+    matrix.drawScale8ColArray(12, 8, i, 1.0, willySprite);
+    matrix.drawScale8ColArray(22, 8, i, 1.0, willySprite);
+    matrix.drawScale8ColArray(2, 8, i, 1.0, willySprite);
     matrix.sendScreenBuffer();
     delay(delayValue - 50);
   }
   delay(delayValue);
-  for (float i = 4.0; i >= -2.0; i -= 0.1){
+  for (float i = -1.0; i <= 1.0; i += 0.1){
+    matrix.wipeScreenBuffer();
+    matrix.drawScale8ColArray(12, 8, i, 1.0, willySprite);
+    matrix.drawScale8ColArray(22, 8, i, 1.0, willySprite);
+    matrix.drawScale8ColArray(2, 8, i, 1.0, willySprite);
+    matrix.sendScreenBuffer();
+    delay(delayValue - 50);
+  }
+  delay(delayValue);
+  for (float i = 1.0; i >= -1.0; i -= 0.1){
     matrix.wipeScreenBuffer();
     matrix.drawScale8ColArray(12, 8, 1.0, i, willySprite);
+    matrix.drawScale8ColArray(20, 8, 1.0, i, willySprite);
+    matrix.drawScale8ColArray(2, 8, 1.0, i, willySprite);
+    matrix.sendScreenBuffer();
+    delay(delayValue - 50);
+  }
+  delay(delayValue);
+    delay(delayValue);
+  for (float i = -1.0; i <= 1.0; i += 0.1){
+    matrix.wipeScreenBuffer();
+    matrix.drawScale8ColArray(12, 8, 1.0, i, willySprite);
+    matrix.drawScale8ColArray(20, 8, 1.0, i, willySprite);
+    matrix.drawScale8ColArray(2, 8, 1.0, i, willySprite);
     matrix.sendScreenBuffer();
     delay(delayValue - 50);
   }
