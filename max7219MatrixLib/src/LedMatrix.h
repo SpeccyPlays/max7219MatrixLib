@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <SPI.h>
 //below are the angles (in degrees) -180 to 150 in 30 degree steps
-//they were converting to radians before sin(angle) and cos(angle)
+//they were converted to radians before sin(angle) and cos(angle)
 const float cosValues[12] PROGMEM{-1.00,-0.87,-0.50,-0.00,0.50,0.87,1.00,0.87,0.50,-0.00,-0.50,-0.87};
 const float sinValues[12] PROGMEM{0.00,-0.50,-0.87,-1.00,-0.87,-0.50,0.00,0.50,0.87,1.00,0.87, 0.50};
 class LedMatrix {
@@ -22,11 +22,19 @@ class LedMatrix {
     void plotCircleThick(byte xm, byte ym, uint8_t r);
     void plotSquare(byte x, byte y, byte width, byte height);
     void plotFilledSquare(byte x, byte y, byte width, byte height);
-    void draw8ColumnArray(byte xStart, byte yStart, byte *array);
-    void draw16ColumnArray(byte xStart, byte yStart, const byte *array);
-    void drawCustomHeightArray(byte xStart, byte yStart, const byte *array, byte startAt, byte chunkSize);
+    void draw8ColArray(byte xStart, byte yStart, const byte *array);
+    void draw16ColArray(byte xStart, byte yStart, const byte *array);
+    void drawCustomColArray(byte xStart, byte yStart, const byte *array, byte startAt, byte chunkSize);
+    float calcRotatedX(float x, float y, byte rotationValue);
+    float calcRotatedY(float x, float y, byte rotationValue);
+    void drawRotated8ColArray(byte xStart, byte yStart, byte const *array, byte rotationValue);
+    void drawRotated8ColArray(byte xStart, byte yStart, float originX, float originY, const byte *array, byte rotationValue);
     void drawRotated16ColArray(byte xStart, byte yStart, const byte *array, byte rotationValue);
     void drawRotated16ColArray(byte xStart, byte yStart, float originX, float originY, const byte *array, byte rotationValue);
+    void drawRotatedCustomColArray(byte xStart, byte yStart, float originX, float originY, byte rotationValue, const byte *array, byte startAt, byte chunkSize);
+    float scaleXValue(uint8_t x, float scaleValue);
+    float scaleYValue(uint8_t y, float scaleValue);
+    void drawScale16ColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array);
     private:
     //below are the command functions for the MAX7219
     //only the bare minimum is included

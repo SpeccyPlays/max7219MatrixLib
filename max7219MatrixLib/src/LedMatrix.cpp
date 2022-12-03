@@ -17,6 +17,8 @@ Only works with squares, i.e, not possible to have a row with 3 modules then a r
 
 Any sprite arrays have to be stored on flash using PROGMEM
 
+Rotation values are 0-11 as precalculated sin and cos values are used for degrees -180 to 150 in 30 degree steps
+
 */
 
 #include "LedMatrix.h"
@@ -228,7 +230,7 @@ void LedMatrix::plotFilledSquare(byte x, byte y, byte width, byte height){
 		}
 	}
 }
-void LedMatrix::draw8ColumnArray(byte xStart, byte yStart, byte *array){
+void LedMatrix::draw8ColArray(byte xStart, byte yStart, const byte *array){
 	/*
 	Draws a bitmap array stored in flash memory that is 8 columns high on the screen
 	*/
@@ -240,7 +242,7 @@ void LedMatrix::draw8ColumnArray(byte xStart, byte yStart, byte *array){
 		}
 	}
 }
-void LedMatrix::draw16ColumnArray(byte xStart, byte yStart, byte const *array){
+void LedMatrix::draw16ColArray(byte xStart, byte yStart, byte const *array){
 	/*
 	Draws a bitmap array stored in flash memory that is 16 columns high on the screen
 	*/
@@ -252,7 +254,7 @@ void LedMatrix::draw16ColumnArray(byte xStart, byte yStart, byte const *array){
 		}
 	}
 }
-void LedMatrix::drawCustomHeightArray(byte xStart, byte yStart, const byte *array, byte startAt, byte chunkSize){
+void LedMatrix::drawCustomColArray(byte xStart, byte yStart, const byte *array, byte startAt, byte chunkSize){
 	/*
 	Draws a bitmap array stored in flash memory that is a user defined number of columns
 	The start at is because I wanted to create a massive sprite in a 1d array and this allowed me to load chuncks in different positions
@@ -267,44 +269,134 @@ void LedMatrix::drawCustomHeightArray(byte xStart, byte yStart, const byte *arra
 		yCounter++;
 	}
 }
-void LedMatrix::drawRotated16ColArray(byte xStart, byte yStart, byte const *array, byte rotationValue){
+float LedMatrix:: calcRotatedX(float x, float y, byte rotationValue){
 	/*
-	Starts drawing at x, y position but rotates around center point of sprite 8 pixels wide x 16 high
+	Seperate function as it's used many times
+	*/
+	float s = pgm_read_float_near(&sinValues[rotationValue]);
+	float c = pgm_read_float_near(&cosValues[rotationValue]);
+	return (x * c) - (y * s);
+}
+float LedMatrix:: calcRotatedY(float x, float y, byte rotationValue){
+	/*
+	Seperate function as it's used many times
+	*/
+	float s = pgm_read_float_near(&sinValues[rotationValue]);
+	float c = pgm_read_float_near(&cosValues[rotationValue]);
+	return (x * s) + (y * c);
+}
+void LedMatrix::drawRotated8ColArray(byte xStart, byte yStart, const byte *array, byte rotationValue){
+	/*
+	Starts drawing at x, y position but rotates around center point of sprite 8 pixels wide x 8 high
 	Origin is fixed to center of sprite
+	## Rotation values are 0-11 as precalculated sin and cos values are used ##
 	*/
 	if (rotationValue >= 0 && rotationValue < 12){
-		float s = pgm_read_float_near(&sinValues[rotationValue]);
-		float c = pgm_read_float_near(&cosValues[rotationValue]);
-		for (byte i = 0; i < (COLHEIGHT << 1); i++){
+		for (byte i = 0; i < COLHEIGHT; i++){
 			for (byte j = 0; j < ROWWIDTH; j++){
 				if (pgm_read_byte(&array[i]) & (128 >> j )){
-					float newX = ((xStart + j) - (xStart + 4.5)) * c - ((yStart + i) - (yStart + 8.5)) * s;
-					float newY = ((xStart + j) - (xStart + 4.5)) * s + ((yStart + i) - (yStart + 8.5)) * c;
-					drawPixel(int(newX + xStart + 4.5), int(newY + yStart + 8.5)); //round float and convert to int
+					float newX = calcRotatedX((xStart + j) - (xStart + 4.5), (yStart + i) - (yStart + 4.5), rotationValue);
+					float newY = calcRotatedY((xStart + j) - (xStart + 4.5), (yStart + i) - (yStart + 4.5), rotationValue);
+					drawPixel(int(newX + xStart + 4.5), int(newY + yStart + 4.5)); //round float and convert to int
 				}
 			}
 		}
 	}
 }
-void LedMatrix::drawRotated16ColArray(byte xStart, byte yStart, float originX, float originY, byte const *array, byte rotationValue){
+void LedMatrix::drawRotated8ColArray(byte xStart, byte yStart, float originX, float originY, const byte *array, byte rotationValue){
 	/*
 	##UNTESTED##
 	Starts drawing at x, y position but rotates around center point of sprite 8 pixels wide x 16 high
 	Allows the origin point to be choosen, relative to the x and y start points
 	So to rotate around the center of a 8 wide 16 high sprite the originX will be 4.5 (halway point between 1 and 8)
 	originY would be 8.5 (half way point between 1 and 16 )
+	## Rotation values are 0-11 as precalculated sin and cos values are used ##
 	*/
 	if (rotationValue >= 0 && rotationValue < 12){
-		float s = pgm_read_float_near(&sinValues[rotationValue]);
-		float c = pgm_read_float_near(&cosValues[rotationValue]);
-		for (byte i = 0; i < (COLHEIGHT << 1); i++){
-		//for (byte i = 0; i < COLHEIGHT * 2; i++){
+		for (byte i = 0; i < (COLHEIGHT << 1); i++){ //bitshift to be fancy instead of * 2
 			for (byte j = 0; j < ROWWIDTH; j++){
 				if (pgm_read_byte(&array[i]) & (128 >> j )){
-					float newX = ((xStart + j) - (xStart + originX)) * c - ((yStart + i) - (yStart + originY)) * s;
-					float newY = ((xStart + j) - (xStart + originX)) * s + ((yStart + i) - (yStart + originY)) * c;
+					float newX = calcRotatedX((xStart + j) - (xStart + originX), (yStart + i) - (yStart + originY), rotationValue);
+					float newY = calcRotatedY((xStart + j) - (xStart + originX), (yStart + i) - (yStart + originY), rotationValue);
 					drawPixel(int(newX + xStart + originX), int(newY + yStart + originY)); //round float and convert to int
 				}
+			}
+		}
+	}
+}
+void LedMatrix::drawRotated16ColArray(byte xStart, byte yStart, const byte *array, byte rotationValue){
+	/*
+	Starts drawing at x, y position but rotates around center point of sprite 8 pixels wide x 16 high
+	Origin is fixed to center of sprite
+	## Rotation values are 0-11 as precalculated sin and cos values are used ##
+	*/
+	if (rotationValue >= 0 && rotationValue < 12){
+		for (byte i = 0; i < (COLHEIGHT << 1); i++){ //bitshift to be fancy instead of * 2
+			for (byte j = 0; j < ROWWIDTH; j++){
+				if (pgm_read_byte(&array[i]) & (128 >> j )){
+					float newX = calcRotatedX((xStart + j) - (xStart + 4.5), (yStart + i) - (yStart + 8.5), rotationValue);
+					float newY = calcRotatedY((xStart + j) - (xStart + 4.5), (yStart + i) - (yStart + 8.5), rotationValue);
+					drawPixel(int(newX + xStart + 4.5), int(newY + yStart + 8.5)); //round float and convert to int
+				}
+			}
+		}
+	}
+}
+void LedMatrix::drawRotated16ColArray(byte xStart, byte yStart, float originX, float originY, const byte *array, byte rotationValue){
+	/*
+	Starts drawing at x, y position but rotates around center point of sprite 8 pixels wide x 16 high
+	Allows the origin point to be choosen, relative to the x and y start points
+	So to rotate around the center of a 8 wide 16 high sprite the originX will be 4.5 (halway point between 1 and 8)
+	originY would be 8.5 (half way point between 1 and 16 )
+	## Rotation values are 0-11 as precalculated sin and cos values are used ##
+	*/
+	if (rotationValue >= 0 && rotationValue < 12){
+		for (byte i = 0; i < (COLHEIGHT << 1); i++){ //bitshift to be fancy instead of * 2
+			for (byte j = 0; j < ROWWIDTH; j++){
+				if (pgm_read_byte(&array[i]) & (128 >> j )){
+					float newX = calcRotatedX((xStart + j) - (xStart + originX), (yStart + i) - (yStart + originY), rotationValue);
+					float newY = calcRotatedY((xStart + j) - (xStart + originX), (yStart + i) - (yStart + originY), rotationValue);
+					drawPixel(int(newX + xStart + originX), int(newY + yStart + originY)); //round float and convert to int
+				}
+			}
+		}
+	}
+}
+void LedMatrix::drawRotatedCustomColArray(byte xStart, byte yStart, float originX, float originY, byte rotationValue, const byte *array, byte startAt, byte chunkSize){
+	/*
+	Starts drawing at x, y position but rotates around center point of sprite 8 pixels wide x 16 high
+	Allows the origin point to be choosen, relative to the x and y start points
+	So to rotate around the center of a 8 wide 16 high sprite the originX will be 4.5 (halway point between 1 and 8)
+	originY would be 8.5 (half way point between 1 and 16 )
+	## Rotation values are 0-11 as precalculated sin and cos values are used ##*/
+	byte yCounter = 0; //used for y position as if we use i it can have massive values
+	for (byte i = startAt; i < (startAt + chunkSize); i++){
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (pgm_read_byte(&array[i]) & (128 >> j )){
+				float newX = calcRotatedX((xStart + j) - (xStart + originX), (yStart + yCounter) - (yStart + originY), rotationValue);
+				float newY = calcRotatedY((xStart + j) - (xStart + originX), (yStart + yCounter) - (yStart + originY), rotationValue);
+				drawPixel(int(newX + xStart + originX), int(newY + yStart + originY));
+			}
+		}
+		yCounter++;
+	}
+}
+float LedMatrix::scaleXValue(uint8_t x, float scaleValue){
+	return int(x * scaleValue);
+}
+float LedMatrix::scaleYValue(uint8_t y, float scaleValue){
+	return int(y * scaleValue);
+}
+void LedMatrix::drawScale16ColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array){
+	/*
+	Draws a scaled version of bitmap array stored in flash memory that is 16 columns high on the screen
+	Use 1.0 for normal height
+	Weirdly,
+	*/
+	for (byte i = 0; i < (COLHEIGHT << 1); i++){ //use bitshift instead of * 2
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (pgm_read_byte(&array[i]) & (128 >> j )){
+				drawPixel(int(scaleXValue(xStart + j, scaleX)), int(scaleYValue(yStart + i, scaleY)));
 			}
 		}
 	}
