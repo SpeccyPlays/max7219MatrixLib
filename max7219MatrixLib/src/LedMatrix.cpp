@@ -364,6 +364,7 @@ void LedMatrix::drawRotated16ColArray(byte xStart, byte yStart, float originX, f
 }
 void LedMatrix::drawRotatedCustomColArray(byte xStart, byte yStart, float originX, float originY, byte rotationValue, const byte *array, byte startAt, byte chunkSize){
 	/*
+	##untested##
 	Starts drawing at x, y position but rotates around center point of sprite 8 pixels wide x 16 high
 	Allows the origin point to be choosen, relative to the x and y start points
 	So to rotate around the center of a 8 wide 16 high sprite the originX will be 4.5 (halway point between 1 and 8)
@@ -382,21 +383,35 @@ void LedMatrix::drawRotatedCustomColArray(byte xStart, byte yStart, float origin
 	}
 }
 float LedMatrix::scaleXValue(uint8_t x, float scaleValue){
-	return int(x * scaleValue);
+	return x * scaleValue;
 }
 float LedMatrix::scaleYValue(uint8_t y, float scaleValue){
-	return int(y * scaleValue);
+	return y * scaleValue;
+}
+void LedMatrix::drawScale8ColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array){
+		/*
+	Draws a scaled version of bitmap array stored in flash memory that is 16 columns high on the screen
+	Use 1.0 for normal height
+	*/
+	for (byte i = 0; i < COLHEIGHT; i++){ //use bitshift instead of * 2
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (pgm_read_byte(&array[i]) & (128 >> j )){
+				drawPixel(xStart + int(scaleXValue(/*xStart +*/ j, scaleX)), yStart + int(scaleYValue(/*yStart + */i, scaleY)));
+				//drawPixel(int(scaleXValue(xStart + j, scaleX)), int(scaleYValue(yStart + i, scaleY)));
+			}
+		}
+	}	
 }
 void LedMatrix::drawScale16ColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array){
 	/*
 	Draws a scaled version of bitmap array stored in flash memory that is 16 columns high on the screen
 	Use 1.0 for normal height
-	Weirdly,
 	*/
 	for (byte i = 0; i < (COLHEIGHT << 1); i++){ //use bitshift instead of * 2
 		for (byte j = 0; j < ROWWIDTH; j++){
 			if (pgm_read_byte(&array[i]) & (128 >> j )){
-				drawPixel(int(scaleXValue(xStart + j, scaleX)), int(scaleYValue(yStart + i, scaleY)));
+				drawPixel(xStart + int(scaleXValue(/*xStart +*/ j, scaleX)), yStart + int(scaleYValue(/*yStart + */i, scaleY)));
+				//drawPixel(int(scaleXValue(xStart + j, scaleX)), int(scaleYValue(yStart + i, scaleY)));
 			}
 		}
 	}

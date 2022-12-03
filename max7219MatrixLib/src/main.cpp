@@ -16,14 +16,18 @@ void setup() {
   //spriteRotationDemo();
 }
 void loop() {
-  for (float i = 4.0; i >= -1.0; i -= 0.1){
+  for (float i = 4.0; i >= -4.0; i -= 0.1){
     matrix.wipeScreenBuffer();
-    matrix.drawScale16ColArray(0, 8, i, 1.0, willySprite);
-    matrix.drawScale16ColArray(8, 8, i, 1.0, willySprite);
-    matrix.drawScale16ColArray(16, 8, i, 1.0, willySprite);
-    matrix.drawScale16ColArray(24, 8, i, 1.0, willySprite);
+    matrix.drawScale8ColArray(16, 8, i, 1.0, willySprite);
     matrix.sendScreenBuffer();
-    delay(delayValue);
+    delay(delayValue - 50);
+  }
+  delay(delayValue);
+  for (float i = 4.0; i >= -2.0; i -= 0.1){
+    matrix.wipeScreenBuffer();
+    matrix.drawScale8ColArray(12, 8, 1.0, i, willySprite);
+    matrix.sendScreenBuffer();
+    delay(delayValue - 50);
   }
   delay(delayValue);
 }
