@@ -19,7 +19,7 @@ void setup() {
   spriteRotationDemo();
 }
 void loop() {
-
+  spriteScalingDemo();
 }
 void spriteScalingDemo(){
   for (float i = 1.0; i >= -1.0; i -= 0.1){

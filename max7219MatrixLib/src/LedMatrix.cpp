@@ -382,22 +382,21 @@ void LedMatrix::drawRotatedCustomColArray(byte xStart, byte yStart, float origin
 		yCounter++;
 	}
 }
-float LedMatrix::scaleXValue(uint8_t x, float scaleValue){
-	return x * scaleValue;
+float LedMatrix::scaleValue(byte value, float scaleValue){
+	return value * scaleValue;
 }
-float LedMatrix::scaleYValue(uint8_t y, float scaleValue){
+/*float LedMatrix::scaleYValue(byte y, float scaleValue){
 	return y * scaleValue;
-}
+}*/
 void LedMatrix::drawScale8ColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array){
 		/*
 	Draws a scaled version of bitmap array stored in flash memory that is 16 columns high on the screen
-	Use 1.0 for normal height
+	Use 1.0 for normal size
 	*/
 	for (byte i = 0; i < COLHEIGHT; i++){ //use bitshift instead of * 2
 		for (byte j = 0; j < ROWWIDTH; j++){
 			if (pgm_read_byte(&array[i]) & (128 >> j )){
-				drawPixel(xStart + int(scaleXValue(/*xStart +*/ j, scaleX)), yStart + int(scaleYValue(/*yStart + */i, scaleY)));
-				//drawPixel(int(scaleXValue(xStart + j, scaleX)), int(scaleYValue(yStart + i, scaleY)));
+				drawPixel(xStart + int(scaleValue(j, scaleX)), yStart + int(scaleValue(i, scaleY)));
 			}
 		}
 	}	
@@ -405,15 +404,30 @@ void LedMatrix::drawScale8ColArray(byte xStart, byte yStart, float scaleX, float
 void LedMatrix::drawScale16ColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array){
 	/*
 	Draws a scaled version of bitmap array stored in flash memory that is 16 columns high on the screen
-	Use 1.0 for normal height
+	Use 1.0 for normal size
 	*/
 	for (byte i = 0; i < (COLHEIGHT << 1); i++){ //use bitshift instead of * 2
 		for (byte j = 0; j < ROWWIDTH; j++){
 			if (pgm_read_byte(&array[i]) & (128 >> j )){
-				drawPixel(xStart + int(scaleXValue(/*xStart +*/ j, scaleX)), yStart + int(scaleYValue(/*yStart + */i, scaleY)));
-				//drawPixel(int(scaleXValue(xStart + j, scaleX)), int(scaleYValue(yStart + i, scaleY)));
+				drawPixel(xStart + int(scaleValue(j, scaleX)), yStart + int(scaleValue(i, scaleY)));
 			}
 		}
+	}
+}
+void LedMatrix::drawScaleCustomColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array, byte startAt, byte chunkSize){
+	/*
+	## UNTESTED ##
+	Draws a bitmap array stored in flash memory that is a user defined number of columns
+	The start at is because I wanted to create a massive sprite in a 1d array and this allowed me to load chuncks in different positions
+	*/
+	byte yCounter = 0; //used for y position as if we use i it can have massive values
+	for (byte i = startAt; i < (startAt + chunkSize); i++){
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (pgm_read_byte(&array[i]) & (128 >> j )){
+				drawPixel(xStart + int(scaleValue(j, scaleX)), yStart + int(scaleValue(yCounter, scaleY)));
+			}
+		}
+		yCounter++;
 	}
 }
 ;
