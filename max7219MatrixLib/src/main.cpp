@@ -8,62 +8,58 @@ void graphicsDemo();
 void customSpriteDemo();
 void spriteScalingDemo();
 void spriteRotationDemo();
+void spriteScalingAndRotatingDemo();
 const byte *megaMan[6] ={megaMan1, megaMan2, megaMan3, megaMan4, megaMan5, megaMan6};
 void setup() {
   randomSeed(A0);
   Serial.begin(115200);
   matrix.init();
+}
+void loop() {
   graphicsDemo();
   customSpriteDemo();
   spriteScalingDemo();
   spriteRotationDemo();
+  spriteScalingAndRotatingDemo();
 }
-void loop() {
-  spriteScalingDemo();
+void spriteScalingAndRotatingDemo(){
+  for (float i = 2.00; i >= 0.00; i -= 0.1){
+    for (byte rot = 0; rot < 12; rot++){
+      matrix.wipeScreenBuffer();
+      for (byte x = 0; x <= 16; x += 8){
+      //the arrays are 72 columns
+      //megaman is 24 x 24 pixels
+      //the arrays are displayed in 3 chunks of 24
+      //the each chunk is 8 pixels across from the last
+        matrix.drawScaleAndRotatedCustomColArray(x + 4, 0, i, i, 16.5 - x, 12.5, rot, megaMan1, x * 3, 24);
+      }
+      matrix.sendScreenBuffer();
+      matrix.wipeScreenBuffer();
+      delay(delayValue -50 );
+    }
+  }
 }
 void spriteScalingDemo(){
-  for (float i = 1.0; i >= -1.0; i -= 0.1){
-    matrix.wipeScreenBuffer();
-    matrix.drawScale8ColArray(12, 8, i, 1.0, willySprite);
-    matrix.drawScale8ColArray(22, 8, i, 1.0, willySprite);
-    matrix.drawScale8ColArray(2, 8, i, 1.0, willySprite);
-    matrix.sendScreenBuffer();
-    delay(delayValue - 50);
-  }
   delay(delayValue);
-  for (float i = -1.0; i <= 1.0; i += 0.1){
+  for (float i = 3.0; i >= 0.0; i -= 0.1){
     matrix.wipeScreenBuffer();
-    matrix.drawScale8ColArray(12, 8, i, 1.0, willySprite);
-    matrix.drawScale8ColArray(22, 8, i, 1.0, willySprite);
-    matrix.drawScale8ColArray(2, 8, i, 1.0, willySprite);
+    for (byte x = 0; x <= 16; x += 8){
+      //the arrays are 72 columns
+      //megaman is 24 x 24 pixels
+      //the arrays are displayed in 3 chunks of 24
+      //the each chunk is 8 pixels across from the last
+        matrix.drawScaleCustomColArray(x + 4, 0, i, i, megaMan1, x * 3, 24);
+    }
     matrix.sendScreenBuffer();
-    delay(delayValue - 50);
-  }
-  delay(delayValue);
-  for (float i = 1.0; i >= -1.0; i -= 0.1){
     matrix.wipeScreenBuffer();
-    matrix.drawScale8ColArray(12, 8, 1.0, i, willySprite);
-    matrix.drawScale8ColArray(20, 8, 1.0, i, willySprite);
-    matrix.drawScale8ColArray(2, 8, 1.0, i, willySprite);
-    matrix.sendScreenBuffer();
-    delay(delayValue - 50);
+    delay(delayValue+50);
   }
-  delay(delayValue);
-    delay(delayValue);
-  for (float i = -1.0; i <= 1.0; i += 0.1){
-    matrix.wipeScreenBuffer();
-    matrix.drawScale8ColArray(12, 8, 1.0, i, willySprite);
-    matrix.drawScale8ColArray(20, 8, 1.0, i, willySprite);
-    matrix.drawScale8ColArray(2, 8, 1.0, i, willySprite);
-    matrix.sendScreenBuffer();
-    delay(delayValue - 50);
-  }
-  delay(delayValue);
+  delay(300);
 }
 void spriteRotationDemo(){
   byte counter = 0;
   for (byte j = 0; j < 3; j++){
-    for (int16_t i = 0; i < 12; i++){
+    for (byte i = 0; i < 12; i++){
       matrix.wipeScreenBuffer();
       matrix.drawRotated16ColArray(counter, 4, willySprite, i);
       matrix.sendScreenBuffer();

@@ -36,6 +36,7 @@ class LedMatrix {
     void drawScale8ColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array);
     void drawScale16ColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array);
     void drawScaleCustomColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array, byte startAt, byte chunkSize);
+    void drawScaleAndRotatedCustomColArray(byte xStart, byte yStart, float scaleX, float scaleY, float originX, float originY, byte rotationValue, const byte *array, byte startAt, byte chunkSize);
     private:
     //below are the command functions for the MAX7219
     //only the bare minimum is included

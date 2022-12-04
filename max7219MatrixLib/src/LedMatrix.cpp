@@ -305,7 +305,6 @@ void LedMatrix::drawRotated8ColArray(byte xStart, byte yStart, const byte *array
 }
 void LedMatrix::drawRotated8ColArray(byte xStart, byte yStart, float originX, float originY, const byte *array, byte rotationValue){
 	/*
-	##UNTESTED##
 	Starts drawing at x, y position but rotates around center point of sprite 8 pixels wide x 16 high
 	Allows the origin point to be choosen, relative to the x and y start points
 	So to rotate around the center of a 8 wide 16 high sprite the originX will be 4.5 (halway point between 1 and 8)
@@ -313,7 +312,7 @@ void LedMatrix::drawRotated8ColArray(byte xStart, byte yStart, float originX, fl
 	## Rotation values are 0-11 as precalculated sin and cos values are used ##
 	*/
 	if (rotationValue >= 0 && rotationValue < 12){
-		for (byte i = 0; i < (COLHEIGHT << 1); i++){ //bitshift to be fancy instead of * 2
+		for (byte i = 0; i < COLHEIGHT; i++){
 			for (byte j = 0; j < ROWWIDTH; j++){
 				if (pgm_read_byte(&array[i]) & (128 >> j )){
 					float newX = calcRotatedX((xStart + j) - (xStart + originX), (yStart + i) - (yStart + originY), rotationValue);
@@ -385,15 +384,12 @@ void LedMatrix::drawRotatedCustomColArray(byte xStart, byte yStart, float origin
 float LedMatrix::scaleValue(byte value, float scaleValue){
 	return value * scaleValue;
 }
-/*float LedMatrix::scaleYValue(byte y, float scaleValue){
-	return y * scaleValue;
-}*/
 void LedMatrix::drawScale8ColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array){
 		/*
-	Draws a scaled version of bitmap array stored in flash memory that is 16 columns high on the screen
+	Draws a scaled version of bitmap array stored in flash memory that is 8 columns high on the screen
 	Use 1.0 for normal size
 	*/
-	for (byte i = 0; i < COLHEIGHT; i++){ //use bitshift instead of * 2
+	for (byte i = 0; i < COLHEIGHT; i++){
 		for (byte j = 0; j < ROWWIDTH; j++){
 			if (pgm_read_byte(&array[i]) & (128 >> j )){
 				drawPixel(xStart + int(scaleValue(j, scaleX)), yStart + int(scaleValue(i, scaleY)));
@@ -406,7 +402,7 @@ void LedMatrix::drawScale16ColArray(byte xStart, byte yStart, float scaleX, floa
 	Draws a scaled version of bitmap array stored in flash memory that is 16 columns high on the screen
 	Use 1.0 for normal size
 	*/
-	for (byte i = 0; i < (COLHEIGHT << 1); i++){ //use bitshift instead of * 2
+	for (byte i = 0; i < (COLHEIGHT << 1); i++){ //use bitshift instead of * 2 to be fancy
 		for (byte j = 0; j < ROWWIDTH; j++){
 			if (pgm_read_byte(&array[i]) & (128 >> j )){
 				drawPixel(xStart + int(scaleValue(j, scaleX)), yStart + int(scaleValue(i, scaleY)));
@@ -416,7 +412,6 @@ void LedMatrix::drawScale16ColArray(byte xStart, byte yStart, float scaleX, floa
 }
 void LedMatrix::drawScaleCustomColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array, byte startAt, byte chunkSize){
 	/*
-	## UNTESTED ##
 	Draws a bitmap array stored in flash memory that is a user defined number of columns
 	The start at is because I wanted to create a massive sprite in a 1d array and this allowed me to load chuncks in different positions
 	*/
@@ -425,6 +420,29 @@ void LedMatrix::drawScaleCustomColArray(byte xStart, byte yStart, float scaleX, 
 		for (byte j = 0; j < ROWWIDTH; j++){
 			if (pgm_read_byte(&array[i]) & (128 >> j )){
 				drawPixel(xStart + int(scaleValue(j, scaleX)), yStart + int(scaleValue(yCounter, scaleY)));
+			}
+		}
+		yCounter++;
+	}
+}
+void LedMatrix::drawScaleAndRotatedCustomColArray(byte xStart, byte yStart, float scaleX, float scaleY, float originX, float originY, byte rotationValue, const byte *array, byte startAt, byte chunkSize){
+	/*
+	Draws a bitmap array stored in flash memory that is a user defined number of columns
+	Can be both rotated and scaled
+	The start at is because I wanted to create a massive sprite in a 1d array and this allowed me to load chuncks in different positions
+	*/
+	byte yCounter = 0; //used for y position as if we use i it can have massive values
+	for (byte i = startAt; i < (startAt + chunkSize); i++){
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (pgm_read_byte(&array[i]) & (128 >> j )){
+				//although it will take up stack, it's mentally easier to do the scaling seperate
+				float scaleJ = scaleValue(j, scaleY);
+				float scaleYCounter = scaleValue(yCounter, scaleY);
+				float scaleOriginX = scaleValue(originX, scaleX );
+				float scaleOriginY = scaleValue(originY, scaleY );
+				float newX = calcRotatedX((xStart + scaleJ) - (xStart + scaleOriginX), (yStart + scaleYCounter) - (yStart + scaleOriginY), rotationValue);
+				float newY = calcRotatedY((xStart + scaleJ) - (xStart + scaleOriginX), (yStart + scaleYCounter) - (yStart + scaleOriginY), rotationValue);
+				drawPixel(int(newX + xStart + scaleOriginX), int(newY + yStart + scaleOriginY));
 			}
 		}
 		yCounter++;
