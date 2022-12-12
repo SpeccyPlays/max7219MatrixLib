@@ -16,6 +16,11 @@ void setup() {
   matrix.init();
 }
 void loop() {
+  matrix.wipeScreenBuffer();
+  matrix.draw8ColArray(8, 0, willySprite);
+  matrix.draw16ColArray(0, 0, willySprite);
+  matrix.sendScreenBuffer();
+  delay(delayValue);
   graphicsDemo();
   customSpriteDemo();
   spriteScalingDemo();

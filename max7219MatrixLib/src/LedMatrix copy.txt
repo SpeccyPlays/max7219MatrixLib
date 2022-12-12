@@ -236,12 +236,26 @@ void LedMatrix::draw8ColArray(byte xStart, byte yStart, const byte *array){
 	Draws a bitmap array stored in flash memory that is 8 columns high on the screen
 	*/
 	drawCustomColArray(xStart, yStart, array, 0, 8);
+	/*for (byte i = 0; i < COLHEIGHT; i++){
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (array[i] & (128 >> j )){
+				drawPixel(xStart + j, yStart + i);
+			}
+		}
+	}*/
 }
 void LedMatrix::draw16ColArray(byte xStart, byte yStart, byte const *array){
 	/*
 	Draws a bitmap array stored in flash memory that is 16 columns high on the screen
 	*/
 	drawCustomColArray(xStart, yStart, array, 0, 16);
+	/*for (byte i = 0; i < (COLHEIGHT << 1); i++){ //use bitshift instead of * 2
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (pgm_read_byte(&array[i]) & (128 >> j )){
+				drawPixel(xStart + j, yStart + i);
+			}
+		}
+	}*/
 }
 void LedMatrix::drawCustomColArray(byte xStart, byte yStart, const byte *array, byte startAt, byte chunkSize){
 	/*
@@ -282,6 +296,17 @@ void LedMatrix::drawRotated8ColArray(byte xStart, byte yStart, const byte *array
 	*/
 	float originXandY = 4.5; //center of both x and y. Makes sure values are float as VSCode assumes they're a double otherwise
 	drawRotatedCustomColArray(xStart, yStart, originXandY, originXandY, rotationValue, array, 0, 8);
+	/*if (rotationValue >= 0 && rotationValue < 12){
+		for (byte i = 0; i < COLHEIGHT; i++){
+			for (byte j = 0; j < ROWWIDTH; j++){
+				if (pgm_read_byte(&array[i]) & (128 >> j )){
+					float newX = calcRotatedX((xStart + j) - (xStart + 4.5), (yStart + i) - (yStart + 4.5), rotationValue);
+					float newY = calcRotatedY((xStart + j) - (xStart + 4.5), (yStart + i) - (yStart + 4.5), rotationValue);
+					drawPixel(int(newX + xStart + 4.5), int(newY + yStart + 4.5)); //round float and convert to int
+				}
+			}
+		}
+	}*/
 }
 void LedMatrix::drawRotated8ColArray(byte xStart, byte yStart, float originX, float originY, const byte *array, byte rotationValue){
 	/*
@@ -292,6 +317,17 @@ void LedMatrix::drawRotated8ColArray(byte xStart, byte yStart, float originX, fl
 	## Rotation values are 0-11 as precalculated sin and cos values are used ##
 	*/
 	drawRotatedCustomColArray(xStart, yStart, originX, originY, rotationValue, array, 0, 8);
+	/*if (rotationValue >= 0 && rotationValue < 12){
+		for (byte i = 0; i < COLHEIGHT; i++){
+			for (byte j = 0; j < ROWWIDTH; j++){
+				if (pgm_read_byte(&array[i]) & (128 >> j )){
+					float newX = calcRotatedX((xStart + j) - (xStart + originX), (yStart + i) - (yStart + originY), rotationValue);
+					float newY = calcRotatedY((xStart + j) - (xStart + originX), (yStart + i) - (yStart + originY), rotationValue);
+					drawPixel(int(newX + xStart + originX), int(newY + yStart + originY)); //round float and convert to int
+				}
+			}
+		}
+	}*/
 }
 void LedMatrix::drawRotated16ColArray(byte xStart, byte yStart, const byte *array, byte rotationValue){
 	/*
@@ -302,6 +338,17 @@ void LedMatrix::drawRotated16ColArray(byte xStart, byte yStart, const byte *arra
 	float originX = 4.5;
 	float originY = 8.5;
 	drawRotatedCustomColArray(xStart, yStart, originX, originY, rotationValue, array, 0, 16);
+	/*if (rotationValue >= 0 && rotationValue < 12){
+		for (byte i = 0; i < (COLHEIGHT << 1); i++){ //bitshift to be fancy instead of * 2
+			for (byte j = 0; j < ROWWIDTH; j++){
+				if (pgm_read_byte(&array[i]) & (128 >> j )){
+					float newX = calcRotatedX((xStart + j) - (xStart + 4.5), (yStart + i) - (yStart + 8.5), rotationValue);
+					float newY = calcRotatedY((xStart + j) - (xStart + 4.5), (yStart + i) - (yStart + 8.5), rotationValue);
+					drawPixel(int(newX + xStart + 4.5), int(newY + yStart + 8.5)); //round float and convert to int
+				}
+			}
+		}
+	}*/
 }
 void LedMatrix::drawRotated16ColArray(byte xStart, byte yStart, float originX, float originY, const byte *array, byte rotationValue){
 	/*
@@ -312,6 +359,17 @@ void LedMatrix::drawRotated16ColArray(byte xStart, byte yStart, float originX, f
 	## Rotation values are 0-11 as precalculated sin and cos values are used ##
 	*/
 	drawRotatedCustomColArray(xStart, yStart, originX, originY, rotationValue, array, 0, 16);
+	/*if (rotationValue >= 0 && rotationValue < 12){
+		for (byte i = 0; i < (COLHEIGHT << 1); i++){ //bitshift to be fancy instead of * 2
+			for (byte j = 0; j < ROWWIDTH; j++){
+				if (pgm_read_byte(&array[i]) & (128 >> j )){
+					float newX = calcRotatedX((xStart + j) - (xStart + originX), (yStart + i) - (yStart + originY), rotationValue);
+					float newY = calcRotatedY((xStart + j) - (xStart + originX), (yStart + i) - (yStart + originY), rotationValue);
+					drawPixel(int(newX + xStart + originX), int(newY + yStart + originY)); //round float and convert to int
+				}
+			}
+		}
+	}*/
 }
 void LedMatrix::drawRotatedCustomColArray(byte xStart, byte yStart, float originX, float originY, byte rotationValue, const byte *array, byte startAt, byte chunkSize){
 	/*
@@ -341,14 +399,26 @@ void LedMatrix::drawScale8ColArray(byte xStart, byte yStart, float scaleX, float
 	Draws a scaled version of bitmap array stored in flash memory that is 8 columns high on the screen
 	Use 1.0 for normal size
 	*/
-	drawScaleCustomColArray(xStart, yStart, scaleX, scaleY, array, 0, 8);
+	for (byte i = 0; i < COLHEIGHT; i++){
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (pgm_read_byte(&array[i]) & (128 >> j )){
+				drawPixel(xStart + int(scaleValue(j, scaleX)), yStart + int(scaleValue(i, scaleY)));
+			}
+		}
+	}	
 }
 void LedMatrix::drawScale16ColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array){
 	/*
 	Draws a scaled version of bitmap array stored in flash memory that is 16 columns high on the screen
 	Use 1.0 for normal size
 	*/
-	drawScaleCustomColArray(xStart, yStart, scaleX, scaleY, array, 0, 16);
+	for (byte i = 0; i < (COLHEIGHT << 1); i++){ //use bitshift instead of * 2 to be fancy
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (pgm_read_byte(&array[i]) & (128 >> j )){
+				drawPixel(xStart + int(scaleValue(j, scaleX)), yStart + int(scaleValue(i, scaleY)));
+			}
+		}
+	}
 }
 void LedMatrix::drawScaleCustomColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array, byte startAt, byte chunkSize){
 	/*
