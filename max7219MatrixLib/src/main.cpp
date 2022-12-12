@@ -4,11 +4,13 @@
 LedMatrix matrix(4, 3);
 uint16_t delayValue = 100;
 byte count = 0;
+byte xCounter = 0;
 void graphicsDemo();
 void customSpriteDemo();
 void spriteScalingDemo();
 void spriteRotationDemo();
 void spriteScalingAndRotatingDemo();
+void penguinAnimation();
 const byte *megaMan[6] ={megaMan1, megaMan2, megaMan3, megaMan4, megaMan5, megaMan6};
 void setup() {
   randomSeed(A0);
@@ -16,16 +18,25 @@ void setup() {
   matrix.init();
 }
 void loop() {
-  matrix.wipeScreenBuffer();
-  matrix.draw8ColArray(8, 0, willySprite);
-  matrix.draw16ColArray(0, 0, willySprite);
-  matrix.sendScreenBuffer();
-  delay(delayValue);
+  penguinAnimation();
   graphicsDemo();
   customSpriteDemo();
   spriteScalingDemo();
   spriteRotationDemo();
   spriteScalingAndRotatingDemo();
+}
+void penguinAnimation(){
+  //trying a tiny Lemmings style penguin sprite
+  for (byte i = 0; i < sizeof(penguin)/sizeof(penguin[0]); i += 9){
+    matrix.wipeScreenBuffer();
+    matrix.drawCustomColArray(xCounter, 15, penguin, i, 9);
+    matrix.sendScreenBuffer();
+    delay(delayValue);
+    xCounter ++;
+    if (xCounter > 31){
+      xCounter = 0;
+    }
+  }
 }
 void spriteScalingAndRotatingDemo(){
   for (float i = 2.00; i >= 0.00; i -= 0.1){
