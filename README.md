@@ -68,6 +68,9 @@ These can be easily combined to create much larger and impressive sprites
 
 Usage Examples
 --------------
+
+[Full demo as of 2022-12-12](https://www.youtube.com/watch?v=S0076WmlEyU)
+
 [MPU6050 controlled LED Sand effect](https://youtu.be/VmF_7_NJ_H0)
 
 Bitmaps image
