@@ -24,6 +24,7 @@ Rotation values are 0-11 as precalculated sin and cos values are used for degree
 #include "LedMatrix.h"
 #include <Arduino.h>
 #include <SPI.h>
+#include "Fonts.h"
 
 LedMatrix::LedMatrix(uint8_t noOfModulesWide, uint8_t noOfModulesHigh){
     this -> numOfModulesWide = noOfModulesWide;
@@ -258,6 +259,11 @@ void LedMatrix::drawCustomColArray(byte xStart, byte yStart, const byte *array, 
 		yCounter++;
 	}
 }
+void LedMatrix::drawLetter(byte xStart, byte yStart, char letter){
+	//todo - write if statement that only accepts letter values that are in font array
+	drawCustomColArray(xStart, yStart, font8x8_basic, int(letter), 8);
+
+}
 float LedMatrix:: calcRotatedX(float x, float y, byte rotationValue){
 	/*
 	Seperate function as it's used many times
@@ -315,7 +321,7 @@ void LedMatrix::drawRotated16ColArray(byte xStart, byte yStart, float originX, f
 }
 void LedMatrix::drawRotatedCustomColArray(byte xStart, byte yStart, float originX, float originY, byte rotationValue, const byte *array, byte startAt, byte chunkSize){
 	/*
-	##untested##
+	
 	Starts drawing at x, y position but rotates around center point of sprite 8 pixels wide x 16 high
 	Allows the origin point to be choosen, relative to the x and y start points
 	So to rotate around the center of a 8 wide 16 high sprite the originX will be 4.5 (halway point between 1 and 8)

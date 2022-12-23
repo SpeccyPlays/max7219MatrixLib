@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "LedMatrix.h"
 #include "sprites.h"
+#include "Fonts.h"
 LedMatrix matrix(4, 3);
 uint16_t delayValue = 100;
 byte count = 0;
@@ -18,12 +19,20 @@ void setup() {
   matrix.init();
 }
 void loop() {
-  penguinAnimation();
+  /*penguinAnimation();
   graphicsDemo();
   customSpriteDemo();
   spriteScalingDemo();
   spriteRotationDemo();
-  spriteScalingAndRotatingDemo();
+  spriteScalingAndRotatingDemo();*/
+  matrix.wipeScreenBuffer();
+  matrix.drawLetter(0, 0, 'B');
+  matrix.drawCustomColArray(8, 0, font8x8_basic, int('B'), 8);
+  for (byte i = 0; i < 8; i++){
+    Serial.println(byte(font8x8_basic[98+i]));
+  }
+  matrix.sendScreenBuffer();
+  delay(delayValue);
 }
 void penguinAnimation(){
   //trying a tiny Lemmings style penguin sprite
