@@ -27,12 +27,9 @@ void loop() {
   spriteScalingAndRotatingDemo();*/
   matrix.wipeScreenBuffer();
   matrix.drawLetter(0, 0, 'B');
-  matrix.drawCustomColArray(8, 0, font8x8_basic, int('B'), 8);
-  for (byte i = 0; i < 8; i++){
-    Serial.println(byte(font8x8_basic[98+i]));
-  }
+  matrix.drawMirrorHCustomColArray(0, 16, font8x8_basic, 66*8, 8);
   matrix.sendScreenBuffer();
-  delay(delayValue);
+  delay(delayValue = 100);
 }
 void penguinAnimation(){
   //trying a tiny Lemmings style penguin sprite

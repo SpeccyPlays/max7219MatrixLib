@@ -24,20 +24,21 @@ class LedMatrix {
     void plotFilledSquare(byte x, byte y, byte width, byte height);
     void draw8ColArray(byte xStart, byte yStart, const byte *array);
     void draw16ColArray(byte xStart, byte yStart, const byte *array);
-    void drawCustomColArray(byte xStart, byte yStart, const byte *array, byte startAt, byte chunkSize);
+    void drawCustomColArray(byte xStart, byte yStart, const byte *array, uint16_t startAt, byte chunkSize);
     void drawLetter(byte xStart, byte yStart, char letter);
+    void drawMirrorHCustomColArray(byte xStart, byte yStart, const byte *array, uint16_t startAt, byte chunkSize);
     float calcRotatedX(float x, float y, byte rotationValue);
     float calcRotatedY(float x, float y, byte rotationValue);
     void drawRotated8ColArray(byte xStart, byte yStart, byte const *array, byte rotationValue);
     void drawRotated8ColArray(byte xStart, byte yStart, float originX, float originY, const byte *array, byte rotationValue);
     void drawRotated16ColArray(byte xStart, byte yStart, const byte *array, byte rotationValue);
     void drawRotated16ColArray(byte xStart, byte yStart, float originX, float originY, const byte *array, byte rotationValue);
-    void drawRotatedCustomColArray(byte xStart, byte yStart, float originX, float originY, byte rotationValue, const byte *array, byte startAt, byte chunkSize);
+    void drawRotatedCustomColArray(byte xStart, byte yStart, float originX, float originY, byte rotationValue, const byte *array, uint16_t startAt, byte chunkSize);
     float scaleValue(byte value, float scaleValue);
     void drawScale8ColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array);
     void drawScale16ColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array);
-    void drawScaleCustomColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array, byte startAt, byte chunkSize);
-    void drawScaleAndRotatedCustomColArray(byte xStart, byte yStart, float scaleX, float scaleY, float originX, float originY, byte rotationValue, const byte *array, byte startAt, byte chunkSize);
+    void drawScaleCustomColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array, uint16_t startAt, byte chunkSize);
+    void drawScaleAndRotatedCustomColArray(byte xStart, byte yStart, float scaleX, float scaleY, float originX, float originY, byte rotationValue, const byte *array, uint16_t startAt, byte chunkSize);
     private:
     //below are the command functions for the MAX7219
     //only the bare minimum is included
