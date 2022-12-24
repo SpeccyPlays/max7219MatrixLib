@@ -26,6 +26,8 @@ class LedMatrix {
     void draw16ColArray(byte xStart, byte yStart, const byte *array);
     void drawCustomColArray(byte xStart, byte yStart, const byte *array, uint16_t startAt, byte chunkSize);
     void drawLetter(byte xStart, byte yStart, char letter);
+    void drawMirrorH8ColArray(byte xStart, byte yStart, const byte *array);
+    void drawMirrorH16ColArray(byte xStart, byte yStart, const byte *array);
     void drawMirrorHCustomColArray(byte xStart, byte yStart, const byte *array, uint16_t startAt, byte chunkSize);
     float calcRotatedX(float x, float y, byte rotationValue);
     float calcRotatedY(float x, float y, byte rotationValue);

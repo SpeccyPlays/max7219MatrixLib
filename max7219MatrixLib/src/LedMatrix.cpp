@@ -261,8 +261,20 @@ void LedMatrix::drawCustomColArray(byte xStart, byte yStart, const byte *array, 
 }
 void LedMatrix::drawLetter(byte xStart, byte yStart, char letter){
 	//todo - write if statement that only accepts letter values that are in font array
-	drawCustomColArray(xStart, yStart, font8x8_basic, int(letter) * COLHEIGHT, 8);
+	drawMirrorHCustomColArray(xStart, yStart, font8x8_basic, int(letter) * COLHEIGHT, 8);
 
+}
+void LedMatrix::drawMirrorH8ColArray(byte xStart, byte yStart, const byte *array){
+	/*
+	Draw a horizontally mirrored 8x8 array
+	*/
+	drawMirrorHCustomColArray(xStart, yStart, array, 0, 8);
+}
+void LedMatrix::drawMirrorH16ColArray(byte xStart, byte yStart, const byte *array){
+	/*
+	Draw a horizontally mirrored 8x16 array
+	*/
+	drawMirrorHCustomColArray(xStart, yStart, array, 0, 16);
 }
 void LedMatrix::drawMirrorHCustomColArray(byte xStart, byte yStart, const byte *array, uint16_t startAt, byte chunkSize){
 	/*

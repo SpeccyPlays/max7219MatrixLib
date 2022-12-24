@@ -26,8 +26,12 @@ void loop() {
   spriteRotationDemo();
   spriteScalingAndRotatingDemo();*/
   matrix.wipeScreenBuffer();
-  matrix.drawLetter(0, 0, 'B');
+  matrix.drawLetter(0, 0, 'c');
   matrix.drawMirrorHCustomColArray(0, 16, font8x8_basic, 66*8, 8);
+  matrix.drawMirrorH8ColArray(8, 0, willySprite);
+  matrix.draw8ColArray(8, 8, willySprite);
+  matrix.drawMirrorH16ColArray(16, 0, willySprite);
+  matrix.draw16ColArray(24, 0, willySprite);
   matrix.sendScreenBuffer();
   delay(delayValue = 100);
 }
