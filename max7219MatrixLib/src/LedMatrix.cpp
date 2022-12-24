@@ -261,7 +261,10 @@ void LedMatrix::drawCustomColArray(byte xStart, byte yStart, const byte *array, 
 }
 void LedMatrix::drawLetter(byte xStart, byte yStart, char letter){
 	//todo - write if statement that only accepts letter values that are in font array
-	drawMirrorHCustomColArray(xStart, yStart, font8x8_basic, int(letter) * COLHEIGHT, 8);
+	/*
+	Fonts are stored in reverse (choice of who I copied the array from) so need to mirror when drawing
+	*/
+	drawMirrorCustomColArray(xStart, yStart, font8x8_basic, int(letter) * COLHEIGHT, 8);
 
 }
 void LedMatrix::drawRotatedLetter(byte xStart, byte yStart, char letter, byte rotationValue){
@@ -270,8 +273,9 @@ void LedMatrix::drawRotatedLetter(byte xStart, byte yStart, char letter, byte ro
 	Origin is fixed to center of sprite
 	## Rotation values are 0-11 as precalculated sin and cos values are used ##
 	*/
-	float originXandY = 3.5; //center of both x and y. Makes sure values are float as VSCode assumes they're a double otherwise
-	drawRotatedCustomColArray(xStart, yStart, originXandY, originXandY, rotationValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
+	//I don't know why 3 is the center point !
+	float originXandY = 3; //center of both x and y. Makes sure values are float as VSCode assumes they're a double otherwise
+	drawMirrorRotatedCustomColArray(xStart, yStart, originXandY, originXandY, rotationValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
 };
 void LedMatrix::drawRotatedLetter(byte xStart, byte yStart, float originX, float originY, char letter, byte rotationValue){
 	/*
@@ -281,21 +285,21 @@ void LedMatrix::drawRotatedLetter(byte xStart, byte yStart, float originX, float
 	originY would be 8.5 (half way point between 1 and 16 ) ##update not sure origin is correct
 	## Rotation values are 0-11 as precalculated sin and cos values are used ##
 	*/
-	drawRotatedCustomColArray(xStart, yStart, originX, originY, rotationValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
+	drawMirrorRotatedCustomColArray(xStart, yStart, originX, originY, rotationValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
 };
-void LedMatrix::drawMirrorH8ColArray(byte xStart, byte yStart, const byte *array){
+void LedMatrix::drawMirror8ColArray(byte xStart, byte yStart, const byte *array){
 	/*
 	Draw a horizontally mirrored 8x8 array
 	*/
-	drawMirrorHCustomColArray(xStart, yStart, array, 0, 8);
+	drawMirrorCustomColArray(xStart, yStart, array, 0, 8);
 }
-void LedMatrix::drawMirrorH16ColArray(byte xStart, byte yStart, const byte *array){
+void LedMatrix::drawMirror16ColArray(byte xStart, byte yStart, const byte *array){
 	/*
 	Draw a horizontally mirrored 8x16 array
 	*/
-	drawMirrorHCustomColArray(xStart, yStart, array, 0, 16);
+	drawMirrorCustomColArray(xStart, yStart, array, 0, 16);
 }
-void LedMatrix::drawMirrorHCustomColArray(byte xStart, byte yStart, const byte *array, uint16_t startAt, byte chunkSize){
+void LedMatrix::drawMirrorCustomColArray(byte xStart, byte yStart, const byte *array, uint16_t startAt, byte chunkSize){
 	/*
 	Draw horizontally mirrored custom column sized array
 	*/
@@ -331,8 +335,18 @@ void LedMatrix::drawRotated8ColArray(byte xStart, byte yStart, const byte *array
 	Origin is fixed to center of sprite
 	## Rotation values are 0-11 as precalculated sin and cos values are used ##
 	*/
-	float originXandY = 3.5; //center of both x and y. Makes sure values are float as VSCode assumes they're a double otherwise
+	float originXandY = 3; //center of both x and y. Makes sure values are float as VSCode assumes they're a double otherwise
 	drawRotatedCustomColArray(xStart, yStart, originXandY, originXandY, rotationValue, array, 0, 8);
+}
+void LedMatrix::drawMirrorRotated8ColArray(byte xStart, byte yStart, byte const *array, byte rotationValue){
+	/*
+	Starts drawing at x, y position but rotates around center point of sprite 8 pixels wide x 8 high
+	Array is mirrored horizontally
+	Origin is fixed to center of sprite
+	## Rotation values are 0-11 as precalculated sin and cos values are used ##
+	*/
+	float originXandY = 3; //center of both x and y. Makes sure values are float as VSCode assumes they're a double otherwise
+	drawMirrorRotatedCustomColArray(xStart, yStart, originXandY, originXandY, rotationValue, array, 0, 8);
 }
 void LedMatrix::drawRotated8ColArray(byte xStart, byte yStart, float originX, float originY, const byte *array, byte rotationValue){
 	/*
@@ -343,6 +357,17 @@ void LedMatrix::drawRotated8ColArray(byte xStart, byte yStart, float originX, fl
 	## Rotation values are 0-11 as precalculated sin and cos values are used ##
 	*/
 	drawRotatedCustomColArray(xStart, yStart, originX, originY, rotationValue, array, 0, 8);
+}
+void LedMatrix::drawMirrorRotated8ColArray(byte xStart, byte yStart, float originX, float originY, const byte *array, byte rotationValue){
+	/*
+	Starts drawing at x, y position but rotates around center point of sprite 8 pixels wide x 8 high
+	Allows the origin point to be choosen, relative to the x and y start points
+	So to rotate around the center of a 8 wide 16 high sprite the originX will be 4.5 (halway point between 1 and 8)
+	originY would be 8.5 (half way point between 1 and 16 )
+	## Rotation values are 0-11 as precalculated sin and cos values are used ##
+	Shows Mirror version of array
+	*/
+	drawMirrorRotatedCustomColArray(xStart, yStart, originX, originY, rotationValue, array, 0, 8);
 }
 void LedMatrix::drawRotated16ColArray(byte xStart, byte yStart, const byte *array, byte rotationValue){
 	/*
@@ -376,6 +401,26 @@ void LedMatrix::drawRotatedCustomColArray(byte xStart, byte yStart, float origin
 	for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
 		for (byte j = 0; j < ROWWIDTH; j++){
 			if (pgm_read_byte(&array[i]) & (128 >> j )){
+				float newX = calcRotatedX((xStart + j) - (xStart + originX), (yStart + yCounter) - (yStart + originY), rotationValue);
+				float newY = calcRotatedY((xStart + j) - (xStart + originX), (yStart + yCounter) - (yStart + originY), rotationValue);
+				drawPixel(int(newX + xStart + originX), int(newY + yStart + originY));
+			}
+		}
+		yCounter++;
+	}
+}
+void LedMatrix::drawMirrorRotatedCustomColArray(byte xStart, byte yStart, float originX, float originY, byte rotationValue, const byte *array, uint16_t startAt, byte chunkSize){
+	/*
+	Rotates an array mirrored horizontally
+	Starts drawing at x, y position but rotates around center point of sprite 8 pixels wide x 16 high
+	Allows the origin point to be choosen, relative to the x and y start points
+	So to rotate around the center of a 8 wide 16 high sprite the originX will be 4.5 (halway point between 1 and 8)
+	originY would be 8.5 (half way point between 1 and 16 )
+	## Rotation values are 0-11 as precalculated sin and cos values are used ##*/
+	byte yCounter = 0; //used for y position as if we use i it can have massive values
+	for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (pgm_read_byte(&array[i]) & (1 << j )){
 				float newX = calcRotatedX((xStart + j) - (xStart + originX), (yStart + yCounter) - (yStart + originY), rotationValue);
 				float newY = calcRotatedY((xStart + j) - (xStart + originX), (yStart + yCounter) - (yStart + originY), rotationValue);
 				drawPixel(int(newX + xStart + originX), int(newY + yStart + originY));

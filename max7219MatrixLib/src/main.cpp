@@ -20,14 +20,14 @@ void setup() {
   matrix.init();
 }
 void loop() {
-  penguinAnimation();
+  /*penguinAnimation();
   graphicsDemo();
   customSpriteDemo();
   spriteScalingDemo();
   spriteRotationDemo();
-  spriteScalingAndRotatingDemo();
+  spriteScalingAndRotatingDemo();*/
   letterRotationDemo();
-  delay(delayValue = 100);
+  //delay(delayValue = 100);
 }
 void penguinAnimation(){
   //trying a tiny Lemmings style penguin sprite
@@ -77,12 +77,38 @@ void spriteScalingDemo(){
   delay(300);
 }
 void letterRotationDemo(){
-    for (byte i = 0; i < 12; i++){
-      matrix.wipeScreenBuffer();
-      matrix.drawRotatedLetter(0, 0, 'D', 11-i);
-      matrix.sendScreenBuffer();
-      delay(delayValue);
-    }
+  matrix.wipeScreenBuffer();
+  matrix.drawLetter(0, 0,'S');
+  matrix.drawLetter(8, 0, 'P');
+  matrix.drawLetter(16, 0, 'E');
+  matrix.drawLetter(24, 0, 'C');
+  matrix.drawLetter(0, 8, 'C');
+  matrix.drawLetter(8, 8, 'Y');
+  matrix.drawLetter(16, 8, ' ');
+  matrix.drawLetter(24, 8, 'P');
+  matrix.drawLetter(0, 16, 'L');
+  matrix.drawLetter(8, 16, 'A');
+  matrix.drawLetter(16, 16, 'Y');
+  matrix.drawLetter(24, 16, 'S');
+  matrix.sendScreenBuffer();
+  delay(delayValue+200);
+  for (byte i = 0; i < 12; i++){
+    matrix.wipeScreenBuffer();
+    matrix.drawRotatedLetter(0, 0, 'S', 11-i);
+    matrix.drawRotatedLetter(8, 0, 'P', 11-i);
+    matrix.drawRotatedLetter(16, 0, 'E', 11-i);
+    matrix.drawRotatedLetter(24, 0, 'C', 11-i);
+    matrix.drawRotatedLetter(0, 8, 'C', 11-i);
+    matrix.drawRotatedLetter(8, 8, 'Y', 11-i);
+    matrix.drawRotatedLetter(16, 8, ' ', 11-i);
+    matrix.drawRotatedLetter(24, 8, 'P', 11-i);
+    matrix.drawRotatedLetter(0, 16, 'L', 11-i);
+    matrix.drawRotatedLetter(8, 16, 'A', 11-i);
+    matrix.drawRotatedLetter(16, 16, 'Y', 11-i);
+    matrix.drawRotatedLetter(24, 16, 'S', 11-i);
+    matrix.sendScreenBuffer();
+    //delay(delayValue);
+  }
 };
 void spriteRotationDemo(){
   byte counter = 0;
