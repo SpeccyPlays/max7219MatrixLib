@@ -9,6 +9,7 @@ byte xCounter = 0;
 void graphicsDemo();
 void customSpriteDemo();
 void spriteScalingDemo();
+void letterRotationDemo();
 void spriteRotationDemo();
 void spriteScalingAndRotatingDemo();
 void penguinAnimation();
@@ -19,20 +20,13 @@ void setup() {
   matrix.init();
 }
 void loop() {
-  /*penguinAnimation();
+  penguinAnimation();
   graphicsDemo();
   customSpriteDemo();
   spriteScalingDemo();
   spriteRotationDemo();
-  spriteScalingAndRotatingDemo();*/
-  matrix.wipeScreenBuffer();
-  matrix.drawLetter(0, 0, 'c');
-  matrix.drawMirrorHCustomColArray(0, 16, font8x8_basic, 66*8, 8);
-  matrix.drawMirrorH8ColArray(8, 0, willySprite);
-  matrix.draw8ColArray(8, 8, willySprite);
-  matrix.drawMirrorH16ColArray(16, 0, willySprite);
-  matrix.draw16ColArray(24, 0, willySprite);
-  matrix.sendScreenBuffer();
+  spriteScalingAndRotatingDemo();
+  letterRotationDemo();
   delay(delayValue = 100);
 }
 void penguinAnimation(){
@@ -82,6 +76,14 @@ void spriteScalingDemo(){
   }
   delay(300);
 }
+void letterRotationDemo(){
+    for (byte i = 0; i < 12; i++){
+      matrix.wipeScreenBuffer();
+      matrix.drawRotatedLetter(0, 0, 'D', 11-i);
+      matrix.sendScreenBuffer();
+      delay(delayValue);
+    }
+};
 void spriteRotationDemo(){
   byte counter = 0;
   for (byte j = 0; j < 3; j++){
