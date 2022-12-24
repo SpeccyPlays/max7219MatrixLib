@@ -20,12 +20,12 @@ void setup() {
   matrix.init();
 }
 void loop() {
-  /*penguinAnimation();
+  penguinAnimation();
   graphicsDemo();
   customSpriteDemo();
   spriteScalingDemo();
   spriteRotationDemo();
-  spriteScalingAndRotatingDemo();*/
+  spriteScalingAndRotatingDemo();
   letterRotationDemo();
   //delay(delayValue = 100);
 }
