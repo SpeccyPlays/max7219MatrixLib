@@ -66,6 +66,10 @@ There is an option for 8bit, 16bit (these refer to the amount of columns and sti
 
 These can be easily combined to create much larger and impressive sprites
 
+It's good practise to wipe the screen buffer, draw what you need to in the screen buffer, then send the screen buffer to the displays.
+
+Characters are an UTF-8 8x8 font and characters includes U+0021 to U+007E. Just use a single letter in 's using the draw letter functions.
+
 Usage Examples
 --------------
 
