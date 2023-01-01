@@ -235,7 +235,7 @@ void LedMatrix::plotFilledSquare(byte x, byte y, byte width, byte height){
 uint8_t LedMatrix::checkCharInFontArray(char letter){
 	/*
 	Checks the letter provided has a character in the font map
-	Starts at ! and ends at ~ which are 33 and 127 respectively
+	Starts at ! and ends at ~ which are 33 and 126 respectively
 	*/
 	if (int(letter) >= 33 && int(letter) < 127 ){
 		return 1;
