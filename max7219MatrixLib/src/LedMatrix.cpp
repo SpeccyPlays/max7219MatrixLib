@@ -235,8 +235,9 @@ void LedMatrix::plotFilledSquare(byte x, byte y, byte width, byte height){
 uint8_t LedMatrix::checkCharInFontArray(char letter){
 	/*
 	Checks the letter provided has a character in the font map
+	Starts at ! and ends at ~ which are 33 and 127 respectively
 	*/
-	if (int(letter) >= 0 && int(letter) < 127 ){
+	if (int(letter) >= 33 && int(letter) < 127 ){
 		return 1;
 	}
 	else return 0;
@@ -323,7 +324,6 @@ void LedMatrix::drawScaleAndRotatedLetter(byte xStart, byte yStart, float scaleX
 		drawMirrorScaleAndRotatedCustomColArray(xStart, yStart, scaleX, scaleY, 3, 3, rotationValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
 	}
 }
-
 void LedMatrix::drawMirror8ColArray(byte xStart, byte yStart, const byte *array){
 	/*
 	Draw a horizontally mirrored 8x8 array
