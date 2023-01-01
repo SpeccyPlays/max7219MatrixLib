@@ -287,6 +287,17 @@ void LedMatrix::drawRotatedLetter(byte xStart, byte yStart, float originX, float
 	*/
 	drawMirrorRotatedCustomColArray(xStart, yStart, originX, originY, rotationValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
 };
+void LedMatrix::drawScaleLetter(byte xStart, byte yStart, float scaleX, float scaleY, char letter){
+		/*
+	Draws a scaled version of letter stored in flash memory on the screen
+	Use 1.0 for normal size
+	*/
+	drawMirrorScaleCustomColArray(xStart, yStart, scaleX, scaleY, font8x8_basic, int(letter) * COLHEIGHT, 8);
+}
+void LedMatrix::drawScaleAndRotatedLetter(byte xStart, byte yStart, float scaleX, float scaleY, byte rotationValue, char letter){
+	drawMirrorScaleAndRotatedCustomColArray(xStart, yStart, scaleX, scaleY, 3, 3, rotationValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
+}
+
 void LedMatrix::drawMirror8ColArray(byte xStart, byte yStart, const byte *array){
 	/*
 	Draw a horizontally mirrored 8x8 array
@@ -461,6 +472,21 @@ void LedMatrix::drawScaleCustomColArray(byte xStart, byte yStart, float scaleX, 
 		yCounter++;
 	}
 }
+void LedMatrix::drawMirrorScaleCustomColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array, uint16_t startAt, byte chunkSize){
+	/*
+	Draws a bitmap array stored in flash memory that is a user defined number of columns
+	The start at is because I wanted to create a massive sprite in a 1d array and this allowed me to load chuncks in different positions
+	*/
+	byte yCounter = 0; //used for y position as if we use i it can have massive values
+	for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (pgm_read_byte(&array[i]) & (1 << j )){
+				drawPixel(xStart + int(scaleValue(j, scaleX)), yStart + int(scaleValue(yCounter, scaleY)));
+			}
+		}
+		yCounter++;
+	}
+}
 void LedMatrix::drawScaleAndRotatedCustomColArray(byte xStart, byte yStart, float scaleX, float scaleY, float originX, float originY, byte rotationValue, const byte *array, uint16_t startAt, byte chunkSize){
 	/*
 	Draws a bitmap array stored in flash memory that is a user defined number of columns
@@ -471,6 +497,29 @@ void LedMatrix::drawScaleAndRotatedCustomColArray(byte xStart, byte yStart, floa
 	for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
 		for (byte j = 0; j < ROWWIDTH; j++){
 			if (pgm_read_byte(&array[i]) & (128 >> j )){
+				//although it will take up stack, it's mentally easier to do the scaling seperate
+				float scaleJ = scaleValue(j, scaleY);
+				float scaleYCounter = scaleValue(yCounter, scaleY);
+				float scaleOriginX = scaleValue(originX, scaleX );
+				float scaleOriginY = scaleValue(originY, scaleY );
+				float newX = calcRotatedX((xStart + scaleJ) - (xStart + scaleOriginX), (yStart + scaleYCounter) - (yStart + scaleOriginY), rotationValue);
+				float newY = calcRotatedY((xStart + scaleJ) - (xStart + scaleOriginX), (yStart + scaleYCounter) - (yStart + scaleOriginY), rotationValue);
+				drawPixel(int(newX + xStart + scaleOriginX), int(newY + yStart + scaleOriginY));
+			}
+		}
+		yCounter++;
+	}
+}
+void LedMatrix::drawMirrorScaleAndRotatedCustomColArray(byte xStart, byte yStart, float scaleX, float scaleY, float originX, float originY, byte rotationValue, const byte *array, uint16_t startAt, byte chunkSize){
+	/*
+	Draws a bitmap array stored in flash memory that is a user defined number of columns
+	Can be both rotated and scaled
+	The start at is because I wanted to create a massive sprite in a 1d array and this allowed me to load chuncks in different positions
+	*/
+	byte yCounter = 0; //used for y position as if we use i it can have massive values
+	for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (pgm_read_byte(&array[i]) & (1 << j )){
 				//although it will take up stack, it's mentally easier to do the scaling seperate
 				float scaleJ = scaleValue(j, scaleY);
 				float scaleYCounter = scaleValue(yCounter, scaleY);

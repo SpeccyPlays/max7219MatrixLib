@@ -13,6 +13,7 @@ void letterRotationDemo();
 void spriteRotationDemo();
 void spriteScalingAndRotatingDemo();
 void penguinAnimation();
+void starWarsStyleIntro();
 const byte *megaMan[6] ={megaMan1, megaMan2, megaMan3, megaMan4, megaMan5, megaMan6};
 void setup() {
   randomSeed(A0);
@@ -20,14 +21,23 @@ void setup() {
   matrix.init();
 }
 void loop() {
-  penguinAnimation();
+  /*penguinAnimation();
   graphicsDemo();
   customSpriteDemo();
   spriteScalingDemo();
   spriteRotationDemo();
   spriteScalingAndRotatingDemo();
-  letterRotationDemo();
-  //delay(delayValue = 100);
+  letterRotationDemo();*/
+  //delay(delayValue + 100);
+  for (float i = 0.0; i < 1.1; i+= 0.1 ){
+  matrix.wipeScreenBuffer();
+  matrix.drawScaleAndRotatedLetter(8,8, 0.5-i, 1.1-i, 1, 'S');
+  matrix.sendScreenBuffer();
+  delay(500);
+  }
+}
+void starWarsStyleIntro(){
+
 }
 void penguinAnimation(){
   //trying a tiny Lemmings style penguin sprite
