@@ -77,5 +77,7 @@ class LedMatrix {
     const byte ROWWIDTH = 8;
     const byte COLHEIGHT = 8;
     byte *screenBuffer;
+    uint8_t checkCharInFontArray(char letter);
+    uint8_t checkRotationValueAllowed(uint8_t rotationValue);
     };
 #endif

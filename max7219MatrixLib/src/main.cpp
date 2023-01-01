@@ -107,7 +107,7 @@ void letterRotationDemo(){
     matrix.drawRotatedLetter(16, 16, 'Y', 11-i);
     matrix.drawRotatedLetter(24, 16, 'S', 11-i);
     matrix.sendScreenBuffer();
-    delay(delayValue);
+    //delay(delayValue);
   }
 };
 void spriteRotationDemo(){

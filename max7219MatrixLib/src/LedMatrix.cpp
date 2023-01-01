@@ -232,6 +232,24 @@ void LedMatrix::plotFilledSquare(byte x, byte y, byte width, byte height){
 		}
 	}
 }
+uint8_t LedMatrix::checkCharInFontArray(char letter){
+	/*
+	Checks the letter provided has a character in the font map
+	*/
+	if (int(letter) >= 0 && int(letter) < 127 ){
+		return 1;
+	}
+	else return 0;
+}
+uint8_t LedMatrix::checkRotationValueAllowed(uint8_t rotationValue){
+	/*
+	Check the rotation value is between 0 and 11 as this is the amount of precalcuated values
+	*/
+	if (rotationValue >= 0 && rotationValue < 12){
+		return 1;
+	}
+	else return 0;
+}
 void LedMatrix::draw8ColArray(byte xStart, byte yStart, const byte *array){
 	/*
 	Draws a bitmap array stored in flash memory that is 8 columns high on the screen
@@ -260,12 +278,12 @@ void LedMatrix::drawCustomColArray(byte xStart, byte yStart, const byte *array, 
 	}
 }
 void LedMatrix::drawLetter(byte xStart, byte yStart, char letter){
-	//todo - write if statement that only accepts letter values that are in font array
 	/*
 	Fonts are stored in reverse (choice of who I copied the array from) so need to mirror when drawing
 	*/
-	drawMirrorCustomColArray(xStart, yStart, font8x8_basic, int(letter) * COLHEIGHT, 8);
-
+	if (checkCharInFontArray(letter)){
+		drawMirrorCustomColArray(xStart, yStart, font8x8_basic, int(letter) * COLHEIGHT, 8);
+	}
 }
 void LedMatrix::drawRotatedLetter(byte xStart, byte yStart, char letter, byte rotationValue){
 	/*
@@ -274,8 +292,10 @@ void LedMatrix::drawRotatedLetter(byte xStart, byte yStart, char letter, byte ro
 	## Rotation values are 0-11 as precalculated sin and cos values are used ##
 	*/
 	//I don't know why 3 is the center point !
-	float originXandY = 3; //center of both x and y. Makes sure values are float as VSCode assumes they're a double otherwise
-	drawMirrorRotatedCustomColArray(xStart, yStart, originXandY, originXandY, rotationValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
+	if (checkRotationValueAllowed(rotationValue)){
+		float originXandY = 3; //center of both x and y. Makes sure values are float as VSCode assumes they're a double otherwise
+		drawMirrorRotatedCustomColArray(xStart, yStart, originXandY, originXandY, rotationValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
+	}
 };
 void LedMatrix::drawRotatedLetter(byte xStart, byte yStart, float originX, float originY, char letter, byte rotationValue){
 	/*
@@ -285,17 +305,23 @@ void LedMatrix::drawRotatedLetter(byte xStart, byte yStart, float originX, float
 	originY would be 8.5 (half way point between 1 and 16 ) ##update not sure origin is correct
 	## Rotation values are 0-11 as precalculated sin and cos values are used ##
 	*/
-	drawMirrorRotatedCustomColArray(xStart, yStart, originX, originY, rotationValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
+	if (checkRotationValueAllowed(rotationValue)){
+		drawMirrorRotatedCustomColArray(xStart, yStart, originX, originY, rotationValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
+	}
 };
 void LedMatrix::drawScaleLetter(byte xStart, byte yStart, float scaleX, float scaleY, char letter){
 		/*
 	Draws a scaled version of letter stored in flash memory on the screen
 	Use 1.0 for normal size
 	*/
-	drawMirrorScaleCustomColArray(xStart, yStart, scaleX, scaleY, font8x8_basic, int(letter) * COLHEIGHT, 8);
+	if (checkCharInFontArray(letter)){
+		drawMirrorScaleCustomColArray(xStart, yStart, scaleX, scaleY, font8x8_basic, int(letter) * COLHEIGHT, 8);
+	}
 }
 void LedMatrix::drawScaleAndRotatedLetter(byte xStart, byte yStart, float scaleX, float scaleY, byte rotationValue, char letter){
-	drawMirrorScaleAndRotatedCustomColArray(xStart, yStart, scaleX, scaleY, 3, 3, rotationValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
+	if (checkCharInFontArray(letter) && checkRotationValueAllowed(rotationValue)){
+		drawMirrorScaleAndRotatedCustomColArray(xStart, yStart, scaleX, scaleY, 3, 3, rotationValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
+	}
 }
 
 void LedMatrix::drawMirror8ColArray(byte xStart, byte yStart, const byte *array){
@@ -326,7 +352,7 @@ void LedMatrix::drawMirrorCustomColArray(byte xStart, byte yStart, const byte *a
 }
 float LedMatrix:: calcRotatedX(float x, float y, byte rotationValue){
 	/*
-	Seperate function as it's used many times
+	Calculates x value for 2d rotations
 	*/
 	float s = pgm_read_float_near(&sinValues[rotationValue]);
 	float c = pgm_read_float_near(&cosValues[rotationValue]);
@@ -334,7 +360,7 @@ float LedMatrix:: calcRotatedX(float x, float y, byte rotationValue){
 }
 float LedMatrix:: calcRotatedY(float x, float y, byte rotationValue){
 	/*
-	Seperate function as it's used many times
+	Calculates y for 2d rotations
 	*/
 	float s = pgm_read_float_near(&sinValues[rotationValue]);
 	float c = pgm_read_float_near(&cosValues[rotationValue]);
@@ -408,16 +434,18 @@ void LedMatrix::drawRotatedCustomColArray(byte xStart, byte yStart, float origin
 	So to rotate around the center of a 8 wide 16 high sprite the originX will be 4.5 (halway point between 1 and 8)
 	originY would be 8.5 (half way point between 1 and 16 )
 	## Rotation values are 0-11 as precalculated sin and cos values are used ##*/
-	byte yCounter = 0; //used for y position as if we use i it can have massive values
-	for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
-		for (byte j = 0; j < ROWWIDTH; j++){
-			if (pgm_read_byte(&array[i]) & (128 >> j )){
-				float newX = calcRotatedX((xStart + j) - (xStart + originX), (yStart + yCounter) - (yStart + originY), rotationValue);
-				float newY = calcRotatedY((xStart + j) - (xStart + originX), (yStart + yCounter) - (yStart + originY), rotationValue);
-				drawPixel(int(newX + xStart + originX), int(newY + yStart + originY));
+	if (checkRotationValueAllowed(rotationValue)){
+		byte yCounter = 0; //used for y position as if we use i it can have massive values
+		for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
+			for (byte j = 0; j < ROWWIDTH; j++){
+				if (pgm_read_byte(&array[i]) & (128 >> j )){
+					float newX = calcRotatedX((xStart + j) - (xStart + originX), (yStart + yCounter) - (yStart + originY), rotationValue);
+					float newY = calcRotatedY((xStart + j) - (xStart + originX), (yStart + yCounter) - (yStart + originY), rotationValue);
+					drawPixel(int(newX + xStart + originX), int(newY + yStart + originY));
+				}
 			}
+			yCounter++;
 		}
-		yCounter++;
 	}
 }
 void LedMatrix::drawMirrorRotatedCustomColArray(byte xStart, byte yStart, float originX, float originY, byte rotationValue, const byte *array, uint16_t startAt, byte chunkSize){
@@ -428,16 +456,18 @@ void LedMatrix::drawMirrorRotatedCustomColArray(byte xStart, byte yStart, float 
 	So to rotate around the center of a 8 wide 16 high sprite the originX will be 4.5 (halway point between 1 and 8)
 	originY would be 8.5 (half way point between 1 and 16 )
 	## Rotation values are 0-11 as precalculated sin and cos values are used ##*/
-	byte yCounter = 0; //used for y position as if we use i it can have massive values
-	for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
-		for (byte j = 0; j < ROWWIDTH; j++){
-			if (pgm_read_byte(&array[i]) & (1 << j )){
-				float newX = calcRotatedX((xStart + j) - (xStart + originX), (yStart + yCounter) - (yStart + originY), rotationValue);
-				float newY = calcRotatedY((xStart + j) - (xStart + originX), (yStart + yCounter) - (yStart + originY), rotationValue);
-				drawPixel(int(newX + xStart + originX), int(newY + yStart + originY));
+	if (checkRotationValueAllowed(rotationValue)){
+		byte yCounter = 0; //used for y position as if we use i it can have massive values
+		for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
+			for (byte j = 0; j < ROWWIDTH; j++){
+				if (pgm_read_byte(&array[i]) & (1 << j )){
+					float newX = calcRotatedX((xStart + j) - (xStart + originX), (yStart + yCounter) - (yStart + originY), rotationValue);
+					float newY = calcRotatedY((xStart + j) - (xStart + originX), (yStart + yCounter) - (yStart + originY), rotationValue);
+					drawPixel(int(newX + xStart + originX), int(newY + yStart + originY));
+				}
 			}
+			yCounter++;
 		}
-		yCounter++;
 	}
 }
 float LedMatrix::scaleValue(byte value, float scaleValue){
@@ -493,21 +523,23 @@ void LedMatrix::drawScaleAndRotatedCustomColArray(byte xStart, byte yStart, floa
 	Can be both rotated and scaled
 	The start at is because I wanted to create a massive sprite in a 1d array and this allowed me to load chuncks in different positions
 	*/
-	byte yCounter = 0; //used for y position as if we use i it can have massive values
-	for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
-		for (byte j = 0; j < ROWWIDTH; j++){
-			if (pgm_read_byte(&array[i]) & (128 >> j )){
+	if (checkRotationValueAllowed(rotationValue)){
+		byte yCounter = 0; //used for y position as if we use i it can have massive values
+		for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
+			for (byte j = 0; j < ROWWIDTH; j++){
+				if (pgm_read_byte(&array[i]) & (128 >> j )){
 				//although it will take up stack, it's mentally easier to do the scaling seperate
-				float scaleJ = scaleValue(j, scaleY);
-				float scaleYCounter = scaleValue(yCounter, scaleY);
-				float scaleOriginX = scaleValue(originX, scaleX );
-				float scaleOriginY = scaleValue(originY, scaleY );
-				float newX = calcRotatedX((xStart + scaleJ) - (xStart + scaleOriginX), (yStart + scaleYCounter) - (yStart + scaleOriginY), rotationValue);
-				float newY = calcRotatedY((xStart + scaleJ) - (xStart + scaleOriginX), (yStart + scaleYCounter) - (yStart + scaleOriginY), rotationValue);
-				drawPixel(int(newX + xStart + scaleOriginX), int(newY + yStart + scaleOriginY));
+					float scaleJ = scaleValue(j, scaleY);
+					float scaleYCounter = scaleValue(yCounter, scaleY);
+					float scaleOriginX = scaleValue(originX, scaleX );
+					float scaleOriginY = scaleValue(originY, scaleY );
+					float newX = calcRotatedX((xStart + scaleJ) - (xStart + scaleOriginX), (yStart + scaleYCounter) - (yStart + scaleOriginY), rotationValue);
+					float newY = calcRotatedY((xStart + scaleJ) - (xStart + scaleOriginX), (yStart + scaleYCounter) - (yStart + scaleOriginY), rotationValue);
+					drawPixel(int(newX + xStart + scaleOriginX), int(newY + yStart + scaleOriginY));
+				}
 			}
+			yCounter++;
 		}
-		yCounter++;
 	}
 }
 void LedMatrix::drawMirrorScaleAndRotatedCustomColArray(byte xStart, byte yStart, float scaleX, float scaleY, float originX, float originY, byte rotationValue, const byte *array, uint16_t startAt, byte chunkSize){
@@ -516,21 +548,23 @@ void LedMatrix::drawMirrorScaleAndRotatedCustomColArray(byte xStart, byte yStart
 	Can be both rotated and scaled
 	The start at is because I wanted to create a massive sprite in a 1d array and this allowed me to load chuncks in different positions
 	*/
-	byte yCounter = 0; //used for y position as if we use i it can have massive values
-	for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
-		for (byte j = 0; j < ROWWIDTH; j++){
-			if (pgm_read_byte(&array[i]) & (1 << j )){
+	if (checkRotationValueAllowed(rotationValue)){
+		byte yCounter = 0; //used for y position as if we use i it can have massive values
+		for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
+			for (byte j = 0; j < ROWWIDTH; j++){
+				if (pgm_read_byte(&array[i]) & (1 << j )){
 				//although it will take up stack, it's mentally easier to do the scaling seperate
-				float scaleJ = scaleValue(j, scaleY);
-				float scaleYCounter = scaleValue(yCounter, scaleY);
-				float scaleOriginX = scaleValue(originX, scaleX );
-				float scaleOriginY = scaleValue(originY, scaleY );
-				float newX = calcRotatedX((xStart + scaleJ) - (xStart + scaleOriginX), (yStart + scaleYCounter) - (yStart + scaleOriginY), rotationValue);
-				float newY = calcRotatedY((xStart + scaleJ) - (xStart + scaleOriginX), (yStart + scaleYCounter) - (yStart + scaleOriginY), rotationValue);
-				drawPixel(int(newX + xStart + scaleOriginX), int(newY + yStart + scaleOriginY));
+					float scaleJ = scaleValue(j, scaleY);
+					float scaleYCounter = scaleValue(yCounter, scaleY);
+					float scaleOriginX = scaleValue(originX, scaleX );
+					float scaleOriginY = scaleValue(originY, scaleY );
+					float newX = calcRotatedX((xStart + scaleJ) - (xStart + scaleOriginX), (yStart + scaleYCounter) - (yStart + scaleOriginY), rotationValue);
+					float newY = calcRotatedY((xStart + scaleJ) - (xStart + scaleOriginX), (yStart + scaleYCounter) - (yStart + scaleOriginY), rotationValue);
+					drawPixel(int(newX + xStart + scaleOriginX), int(newY + yStart + scaleOriginY));
+				}	
 			}
+			yCounter++;
 		}
-		yCounter++;
 	}
 }
 ;
