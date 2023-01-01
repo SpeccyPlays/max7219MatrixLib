@@ -3,6 +3,7 @@
 #include "sprites.h"
 #include "Fonts.h"
 LedMatrix matrix(4, 3);
+//used for demos
 uint16_t delayValue = 100;
 byte count = 0;
 byte xCounter = 0;
