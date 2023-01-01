@@ -68,10 +68,12 @@ These can be easily combined to create much larger and impressive sprites
 
 It's good practise to wipe the screen buffer, draw what you need to in the screen buffer, then send the screen buffer to the displays.
 
-Characters are an UTF-8 8x8 font and characters includes U+0021 to U+007E. Just use a single letter in 's using the draw letter functions.
+Characters are an UTF-8 8x8 font and characters includes U+0020 to U+007E. Just use a single letter in 's using the draw letter functions.
 
 Usage Examples
 --------------
+
+[Characters being displayed and rotated](https://youtu.be/Md17N4Kh_fQ)
 
 [Full demo as of 2022-12-12](https://www.youtube.com/watch?v=S0076WmlEyU)
 
