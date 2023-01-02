@@ -356,6 +356,12 @@ void LedMatrix::drawMirrorCustomColArray(byte xStart, byte yStart, const byte *a
 		yCounter++;
 	}
 }
+void LedMatrix::drawSkew8ColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array){
+	drawSkewCustomColArray(xStart, yStart, skewValue, array, 0, 8);
+}
+void LedMatrix::drawSkew16ColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array){
+	drawSkewCustomColArray(xStart, yStart, skewValue, array, 0, 16);
+}
 void LedMatrix::drawSkewCustomColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array, uint16_t startAt, byte chunkSize){
 	/*
 	Draw an array that is skewed by the amount specified - only for x.
@@ -372,6 +378,12 @@ void LedMatrix::drawSkewCustomColArray(byte xStart, byte yStart, int8_t skewValu
 		}
 		yCounter++;
 	}
+}
+void LedMatrix::drawSkewMirror8ColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array){
+	drawSkewMirrorCustomColArray(xStart, yStart, skewValue, array, 0, 8);
+}
+void LedMatrix::drawSkewMirror16ColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array){
+	drawSkewMirrorCustomColArray(xStart, yStart, skewValue, array, 0, 16);
 }
 void LedMatrix::drawSkewMirrorCustomColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array, uint16_t startAt, byte chunkSize){
 	/*

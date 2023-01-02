@@ -40,7 +40,11 @@ class LedMatrix {
     void drawMirror16ColArray(byte xStart, byte yStart, const byte *array);
     void drawMirrorCustomColArray(byte xStart, byte yStart, const byte *array, uint16_t startAt, byte chunkSize);
     //skewed array functions
+    void drawSkew8ColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array);
+    void drawSkew16ColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array);
     void drawSkewCustomColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array, uint16_t startAt, byte chunkSize);
+    void drawSkewMirror8ColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array);
+    void drawSkewMirror16ColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array);
     void drawSkewMirrorCustomColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array, uint16_t startAt, byte chunkSize);
     //functions for getting rotated x and y values
     float calcRotatedX(float x, float y, byte rotationValue);

@@ -30,7 +30,8 @@ void loop() {
   letterRotationDemo();*/
   //delay(delayValue + 100);
   matrix.wipeScreenBuffer();
-  matrix.drawSkewLetter(16, 16, 1, 'S');
+  matrix.drawSkewMirror8ColArray(0, 0, 1, willySprite);
+  matrix.drawSkewLetter(16, 16, 2, 'S');
   matrix.sendScreenBuffer();
 
 }
