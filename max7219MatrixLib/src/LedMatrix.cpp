@@ -351,7 +351,19 @@ void LedMatrix::drawMirrorCustomColArray(byte xStart, byte yStart, const byte *a
 		yCounter++;
 	}
 }
-float LedMatrix:: calcRotatedX(float x, float y, byte rotationValue){
+void LedMatrix::drawSkewCustomColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array, uint16_t startAt, byte chunkSize){
+	/*
+	Draw an array that is skewed by the amount specified - only for x.
+	Note, it is done by a pixel amount and cumulative as it moves through the amount of columns
+	*/
+}
+void LedMatrix::drawSkewMirrorCustomColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array, uint16_t startAt, byte chunkSize){
+	/*
+	Draw a mirrored array that is skewed by the amount specified - - only for x.
+	Note, it is done by a pixel amount and cumulative as it moves through the amount of columns
+	*/
+}
+float LedMatrix::calcRotatedX(float x, float y, byte rotationValue){
 	/*
 	Calculates x value for 2d rotations
 	*/
