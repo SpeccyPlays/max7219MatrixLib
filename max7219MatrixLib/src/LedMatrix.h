@@ -34,6 +34,7 @@ class LedMatrix {
     void drawRotatedLetter(byte xStart, byte yStart, float originX, float originY, char letter, byte rotationValue);
     void drawScaleLetter(byte xStart, byte yStart, float scaleX, float scaleY, char letter);
     void drawScaleAndRotatedLetter(byte xStart, byte yStart, float scaleX, float scaleY, byte rotationValue, char letter);
+    void drawSkewLetter(byte xStart, byte yStart, int8_t skewValue, char letter);
     //mirrored array functions
     void drawMirror8ColArray(byte xStart, byte yStart, const byte *array);
     void drawMirror16ColArray(byte xStart, byte yStart, const byte *array);

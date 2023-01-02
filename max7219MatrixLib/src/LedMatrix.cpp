@@ -325,6 +325,11 @@ void LedMatrix::drawScaleAndRotatedLetter(byte xStart, byte yStart, float scaleX
 		drawMirrorScaleAndRotatedCustomColArray(xStart, yStart, scaleX, scaleY, 3, 3, rotationValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
 	}
 }
+void LedMatrix::drawSkewLetter(byte xStart, byte yStart, int8_t skewValue, char letter){
+	if (checkCharInFontArray(letter)){
+		drawSkewMirrorCustomColArray(xStart, yStart, skewValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
+	}
+}
 void LedMatrix::drawMirror8ColArray(byte xStart, byte yStart, const byte *array){
 	/*
 	Draw a horizontally mirrored 8x8 array
@@ -356,12 +361,34 @@ void LedMatrix::drawSkewCustomColArray(byte xStart, byte yStart, int8_t skewValu
 	Draw an array that is skewed by the amount specified - only for x.
 	Note, it is done by a pixel amount and cumulative as it moves through the amount of columns
 	*/
+	byte yCounter = 0; //used for y position as if we use i it can have massive values
+	int8_t skewCounter = 0;
+	for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
+		skewCounter = yCounter * skewValue;
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (pgm_read_byte(&array[i]) & (128 >> j )){
+				drawPixel(xStart + j + skewCounter, yStart + yCounter);
+			}
+		}
+		yCounter++;
+	}
 }
 void LedMatrix::drawSkewMirrorCustomColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array, uint16_t startAt, byte chunkSize){
 	/*
 	Draw a mirrored array that is skewed by the amount specified - - only for x.
 	Note, it is done by a pixel amount and cumulative as it moves through the amount of columns
 	*/
+	byte yCounter = 0; //used for y position as if we use i it can have massive values
+	int8_t skewCounter = 0;
+	for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
+		skewCounter = yCounter * skewValue;
+		for (byte j = 0; j < ROWWIDTH; j++){
+			if (pgm_read_byte(&array[i]) & (1 << j )){
+				drawPixel(xStart + j + skewCounter, yStart + yCounter);
+			}
+		}
+		yCounter++;
+	}
 }
 float LedMatrix::calcRotatedX(float x, float y, byte rotationValue){
 	/*

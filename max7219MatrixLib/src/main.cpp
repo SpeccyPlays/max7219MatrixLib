@@ -21,14 +21,18 @@ void setup() {
   matrix.init();
 }
 void loop() {
-  penguinAnimation();
+  /*penguinAnimation();
   graphicsDemo();
   customSpriteDemo();
   spriteScalingDemo();
   spriteRotationDemo();
   spriteScalingAndRotatingDemo();
-  letterRotationDemo();
+  letterRotationDemo();*/
   //delay(delayValue + 100);
+  matrix.wipeScreenBuffer();
+  matrix.drawSkewLetter(16, 16, 1, 'S');
+  matrix.sendScreenBuffer();
+
 }
 void penguinAnimation(){
   //trying a tiny Lemmings style penguin sprite
