@@ -34,18 +34,18 @@ class LedMatrix {
     void drawRotatedLetter(byte xStart, byte yStart, float originX, float originY, char letter, byte rotationValue);
     void drawScaleLetter(byte xStart, byte yStart, float scaleX, float scaleY, char letter);
     void drawScaleAndRotatedLetter(byte xStart, byte yStart, float scaleX, float scaleY, byte rotationValue, char letter);
-    void drawSkewLetter(byte xStart, byte yStart, int8_t skewValue, char letter);
+    void drawSkewLetter(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, char letter);
     //mirrored array functions
     void drawMirror8ColArray(byte xStart, byte yStart, const byte *array);
     void drawMirror16ColArray(byte xStart, byte yStart, const byte *array);
     void drawMirrorCustomColArray(byte xStart, byte yStart, const byte *array, uint16_t startAt, byte chunkSize);
     //skewed array functions
-    void drawSkew8ColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array);
-    void drawSkew16ColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array);
-    void drawSkewCustomColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array, uint16_t startAt, byte chunkSize);
-    void drawSkewMirror8ColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array);
-    void drawSkewMirror16ColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array);
-    void drawSkewMirrorCustomColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array, uint16_t startAt, byte chunkSize);
+    void drawSkew8ColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array);
+    void drawSkew16ColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array);
+    void drawSkewCustomColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array, uint16_t startAt, byte chunkSize);
+    void drawSkewMirror8ColArray(byte xStart, byte yStart, int8_t skewXValue,int8_t skewYValue, const byte *array);
+    void drawSkewMirror16ColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array);
+    void drawSkewMirrorCustomColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array, uint16_t startAt, byte chunkSize);
     //functions for getting rotated x and y values
     float calcRotatedX(float x, float y, byte rotationValue);
     float calcRotatedY(float x, float y, byte rotationValue);

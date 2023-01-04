@@ -29,11 +29,14 @@ void loop() {
   spriteScalingAndRotatingDemo();
   letterRotationDemo();*/
   //delay(delayValue + 100);
-  matrix.wipeScreenBuffer();
-  matrix.drawSkewMirror8ColArray(0, 0, 1, willySprite);
-  matrix.drawSkewLetter(16, 16, 2, 'S');
-  matrix.sendScreenBuffer();
-
+  for (uint8_t i = 0; i < 26; i++ ){
+    //almost star wars style text
+    matrix.wipeScreenBuffer();
+    matrix.drawSkewLetter(0 +i, 24-i, -1, 0, 'S');
+    matrix.drawSkewLetter(24 -i, 24- i, 1, 0, 'P');
+    matrix.sendScreenBuffer();
+    delay(200);
+  }
 }
 void penguinAnimation(){
   //trying a tiny Lemmings style penguin sprite

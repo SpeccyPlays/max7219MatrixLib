@@ -325,9 +325,9 @@ void LedMatrix::drawScaleAndRotatedLetter(byte xStart, byte yStart, float scaleX
 		drawMirrorScaleAndRotatedCustomColArray(xStart, yStart, scaleX, scaleY, 3, 3, rotationValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
 	}
 }
-void LedMatrix::drawSkewLetter(byte xStart, byte yStart, int8_t skewValue, char letter){
+void LedMatrix::drawSkewLetter(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, char letter){
 	if (checkCharInFontArray(letter)){
-		drawSkewMirrorCustomColArray(xStart, yStart, skewValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
+		drawSkewMirrorCustomColArray(xStart, yStart, skewXValue, skewYValue, font8x8_basic, int(letter) * COLHEIGHT, 8);
 	}
 }
 void LedMatrix::drawMirror8ColArray(byte xStart, byte yStart, const byte *array){
@@ -356,47 +356,53 @@ void LedMatrix::drawMirrorCustomColArray(byte xStart, byte yStart, const byte *a
 		yCounter++;
 	}
 }
-void LedMatrix::drawSkew8ColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array){
-	drawSkewCustomColArray(xStart, yStart, skewValue, array, 0, 8);
+void LedMatrix::drawSkew8ColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array){
+	drawSkewCustomColArray(xStart, yStart, skewXValue, skewYValue,array, 0, 8);
 }
-void LedMatrix::drawSkew16ColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array){
-	drawSkewCustomColArray(xStart, yStart, skewValue, array, 0, 16);
+void LedMatrix::drawSkew16ColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array){
+	drawSkewCustomColArray(xStart, yStart, skewXValue, skewYValue, array, 0, 16);
 }
-void LedMatrix::drawSkewCustomColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array, uint16_t startAt, byte chunkSize){
+void LedMatrix::drawSkewCustomColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array, uint16_t startAt, byte chunkSize){
 	/*
-	Draw an array that is skewed by the amount specified - only for x.
-	Note, it is done by a pixel amount and cumulative as it moves through the amount of columns
+	Draw an array that is skewed by the amount specified.
+	Better if only skewing x or y, not both together
+	Note, it is done by a pixel amount and cumulative as it moves through the amount of columns and rows
 	*/
 	byte yCounter = 0; //used for y position as if we use i it can have massive values
-	int8_t skewCounter = 0;
+	int8_t skewXCounter = 0;
+	int8_t skewYCounter = 0;
 	for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
-		skewCounter = yCounter * skewValue;
+		skewXCounter = yCounter * skewXValue;
 		for (byte j = 0; j < ROWWIDTH; j++){
+			skewYCounter = yCounter * skewYValue;
 			if (pgm_read_byte(&array[i]) & (128 >> j )){
-				drawPixel(xStart + j + skewCounter, yStart + yCounter);
+				drawPixel(xStart + j + skewXCounter, yStart + yCounter + skewYCounter);
 			}
 		}
 		yCounter++;
 	}
 }
-void LedMatrix::drawSkewMirror8ColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array){
-	drawSkewMirrorCustomColArray(xStart, yStart, skewValue, array, 0, 8);
+void LedMatrix::drawSkewMirror8ColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array){
+	drawSkewMirrorCustomColArray(xStart, yStart, skewXValue, skewYValue, array, 0, 8);
 }
-void LedMatrix::drawSkewMirror16ColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array){
-	drawSkewMirrorCustomColArray(xStart, yStart, skewValue, array, 0, 16);
+void LedMatrix::drawSkewMirror16ColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array){
+	drawSkewMirrorCustomColArray(xStart, yStart, skewXValue, skewYValue, array, 0, 16);
 }
-void LedMatrix::drawSkewMirrorCustomColArray(byte xStart, byte yStart, int8_t skewValue, const byte *array, uint16_t startAt, byte chunkSize){
+void LedMatrix::drawSkewMirrorCustomColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array, uint16_t startAt, byte chunkSize){
 	/*
-	Draw a mirrored array that is skewed by the amount specified - - only for x.
-	Note, it is done by a pixel amount and cumulative as it moves through the amount of columns
+	Draw a mirrored array that is skewed by the amount specified.
+	Better if only skewing x or y, not both together
+	Note, it is done by a pixel amount and cumulative as it moves through the amount of columns and rows
 	*/
 	byte yCounter = 0; //used for y position as if we use i it can have massive values
-	int8_t skewCounter = 0;
+	int8_t skewXCounter = 0;
+	int8_t skewYCounter = 0;
 	for (uint16_t i = startAt; i < (startAt + chunkSize); i++){
-		skewCounter = yCounter * skewValue;
+		skewXCounter = yCounter * skewXValue;
 		for (byte j = 0; j < ROWWIDTH; j++){
+			skewYCounter = j * skewYValue;
 			if (pgm_read_byte(&array[i]) & (1 << j )){
-				drawPixel(xStart + j + skewCounter, yStart + yCounter);
+				drawPixel(xStart + j + skewXCounter, yStart + yCounter + skewYCounter);
 			}
 		}
 		yCounter++;
