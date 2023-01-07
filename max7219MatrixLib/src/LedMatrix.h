@@ -35,6 +35,7 @@ class LedMatrix {
     void drawScaleLetter(byte xStart, byte yStart, float scaleX, float scaleY, char letter);
     void drawScaleAndRotatedLetter(byte xStart, byte yStart, float scaleX, float scaleY, byte rotationValue, char letter);
     void drawSkewLetter(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, char letter);
+    void drawSkewAndScaleLetter(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, float scaleXValue, float scaleYValue, char letter);
     //mirrored array functions
     void drawMirror8ColArray(byte xStart, byte yStart, const byte *array);
     void drawMirror16ColArray(byte xStart, byte yStart, const byte *array);
@@ -43,9 +44,16 @@ class LedMatrix {
     void drawSkew8ColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array);
     void drawSkew16ColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array);
     void drawSkewCustomColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array, uint16_t startAt, byte chunkSize);
-    void drawSkewMirror8ColArray(byte xStart, byte yStart, int8_t skewXValue,int8_t skewYValue, const byte *array);
+    void drawSkewMirror8ColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array);
     void drawSkewMirror16ColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array);
     void drawSkewMirrorCustomColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, const byte *array, uint16_t startAt, byte chunkSize);
+    //skewed and scaled array functions
+    void drawSkewAndScale8ColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, float scaleXValue, float scaleYValue, const byte *array);
+    void drawSkewAndScale16ColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, float scaleXValue, float scaleYValue, const byte *array);
+    void drawSkewAndScaleCustomColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, float scaleXValue, float scaleYValue, const byte *array, uint16_t startAt, byte chunkSize);
+    void drawSkewAndScaleMirror8ColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, float scaleXValue, float scaleYValue, const byte *array);
+    void drawSkewAndScaleMirror16ColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, float scaleXValue, float scaleYValue, const byte *array);
+    void drawSkewAndScaleMirrorCustomColArray(byte xStart, byte yStart, int8_t skewXValue, int8_t skewYValue, float scaleXValue, float scaleYValue, const byte *array, uint16_t startAt, byte chunkSize); 
     //functions for getting rotated x and y values
     float calcRotatedX(float x, float y, byte rotationValue);
     float calcRotatedY(float x, float y, byte rotationValue);
@@ -59,7 +67,7 @@ class LedMatrix {
     void drawRotatedCustomColArray(byte xStart, byte yStart, float originX, float originY, byte rotationValue, const byte *array, uint16_t startAt, byte chunkSize);
     void drawMirrorRotatedCustomColArray(byte xStart, byte yStart, float originX, float originY, byte rotationValue, const byte *array, uint16_t startAt, byte chunkSize);
     // function for getting scale values
-    float scaleValue(byte value, float scaleValue);
+    float scaleValue(int8_t value, float scaleValue);
     //scaled array functions
     void drawScale8ColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array);
     void drawScale16ColArray(byte xStart, byte yStart, float scaleX, float scaleY, const byte *array);

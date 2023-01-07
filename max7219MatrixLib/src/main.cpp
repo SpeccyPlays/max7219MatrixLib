@@ -29,13 +29,22 @@ void loop() {
   spriteScalingAndRotatingDemo();
   letterRotationDemo();*/
   //delay(delayValue + 100);
-  for (uint8_t i = 0; i < 26; i++ ){
+  float scaleValue = 2.0;
+  for (uint8_t i = 0; i < 24; i++ ){
     //almost star wars style text
     matrix.wipeScreenBuffer();
-    matrix.drawSkewLetter(0 +i, 24-i, -1, 0, 'S');
-    matrix.drawSkewLetter(24 -i, 24- i, 1, 0, 'P');
+    matrix.drawSkewAndScaleLetter(-16 +i, 24-i, -1, 0, scaleValue, scaleValue, 'S');
+    matrix.drawSkewAndScaleLetter(-8 +i, 24- i, -1, 0, scaleValue, scaleValue,'P');
+    matrix.drawSkewAndScaleLetter(0 +i, 24- i, 0, 0, scaleValue, scaleValue,'E');
+    matrix.drawSkewAndScaleLetter(24 -i, 24- i, 0, 0, scaleValue, scaleValue, 'C');
+    matrix.drawSkewAndScaleLetter(32 -i, 24- i, 1, 0, scaleValue, scaleValue,'C');
+    matrix.drawSkewAndScaleLetter(40 -i, 24- i, 1, 0, scaleValue, scaleValue,'Y');
     matrix.sendScreenBuffer();
-    delay(200);
+    delay(50);
+    if (scaleValue > 0.0){
+      scaleValue -= 0.1;
+    }
+    
   }
 }
 void penguinAnimation(){
