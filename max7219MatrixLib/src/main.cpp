@@ -14,6 +14,7 @@ void letterRotationDemo();
 void spriteRotationDemo();
 void spriteScalingAndRotatingDemo();
 void penguinAnimation();
+void movingRoad();
 const byte *megaMan[6] ={megaMan1, megaMan2, megaMan3, megaMan4, megaMan5, megaMan6};
 void setup() {
   randomSeed(A0);
@@ -27,24 +28,23 @@ void loop() {
   spriteScalingDemo();
   spriteRotationDemo();
   spriteScalingAndRotatingDemo();
-  letterRotationDemo();*/
+  letterRotationDemo();
+  letterSkewedDemo();*/
   //delay(delayValue + 100);
-  float scaleValue = 2.0;
-  for (uint8_t i = 0; i < 24; i++ ){
-    //almost star wars style text
+
+}
+void letterSkewedDemo(){
+  for (int8_t movement = 32; movement > -58; movement --){
     matrix.wipeScreenBuffer();
-    matrix.drawSkewAndScaleLetter(-16 +i, 24-i, -1, 0, scaleValue, scaleValue, 'S');
-    matrix.drawSkewAndScaleLetter(-8 +i, 24- i, -1, 0, scaleValue, scaleValue,'P');
-    matrix.drawSkewAndScaleLetter(0 +i, 24- i, 0, 0, scaleValue, scaleValue,'E');
-    matrix.drawSkewAndScaleLetter(24 -i, 24- i, 0, 0, scaleValue, scaleValue, 'C');
-    matrix.drawSkewAndScaleLetter(32 -i, 24- i, 1, 0, scaleValue, scaleValue,'C');
-    matrix.drawSkewAndScaleLetter(40 -i, 24- i, 1, 0, scaleValue, scaleValue,'Y');
+    matrix.drawSkewLetter(movement, 8, 1, 0, 'S');
+    matrix.drawSkewLetter(movement + 10, 8, 1, 0, 'P');
+    matrix.drawSkewLetter(movement + 20, 8, 1, 0, 'E');
+    matrix.drawSkewLetter(movement + 30, 8, 1, 0, 'C');
+    matrix.drawSkewLetter(movement + 40, 8, 1, 0, 'C');
+    matrix.drawSkewLetter(movement + 50, 8, 1, 0, 'Y');
     matrix.sendScreenBuffer();
-    delay(50);
-    if (scaleValue > 0.0){
-      scaleValue -= 0.1;
-    }
-    
+    delay(30);
+
   }
 }
 void penguinAnimation(){
