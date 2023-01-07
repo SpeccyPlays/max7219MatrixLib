@@ -14,7 +14,7 @@ void letterRotationDemo();
 void spriteRotationDemo();
 void spriteScalingAndRotatingDemo();
 void penguinAnimation();
-void movingRoad();
+void letterSkewedDemo();
 const byte *megaMan[6] ={megaMan1, megaMan2, megaMan3, megaMan4, megaMan5, megaMan6};
 void setup() {
   randomSeed(A0);
@@ -28,8 +28,8 @@ void loop() {
   spriteScalingDemo();
   spriteRotationDemo();
   spriteScalingAndRotatingDemo();
-  letterRotationDemo();
-  letterSkewedDemo();*/
+  letterRotationDemo();*/
+  letterSkewedDemo();
   //delay(delayValue + 100);
 
 }
@@ -42,6 +42,11 @@ void letterSkewedDemo(){
     matrix.drawSkewLetter(movement + 30, 8, 1, 0, 'C');
     matrix.drawSkewLetter(movement + 40, 8, 1, 0, 'C');
     matrix.drawSkewLetter(movement + 50, 8, 1, 0, 'Y');
+    matrix.drawSkewLetter(movement + 10, 16, 1, 0, 'P');
+    matrix.drawSkewLetter(movement + 20, 16, 1, 0, 'L');
+    matrix.drawSkewLetter(movement + 30, 16, 1, 0, 'A');
+    matrix.drawSkewLetter(movement + 40, 16, 1, 0, 'Y');
+    matrix.drawSkewLetter(movement + 50, 16, 1, 0, 'S');
     matrix.sendScreenBuffer();
     delay(30);
 
