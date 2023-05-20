@@ -36,17 +36,17 @@ void loop() {
 void letterSkewedDemo(){
   for (int8_t movement = 32; movement > -58; movement --){
     matrix.wipeScreenBuffer();
-    matrix.drawSkewLetter(movement, 8, 1, 0, 'S');
-    matrix.drawSkewLetter(movement + 10, 8, 1, 0, 'P');
-    matrix.drawSkewLetter(movement + 20, 8, 1, 0, 'E');
-    matrix.drawSkewLetter(movement + 30, 8, 1, 0, 'C');
-    matrix.drawSkewLetter(movement + 40, 8, 1, 0, 'C');
-    matrix.drawSkewLetter(movement + 50, 8, 1, 0, 'Y');
-    matrix.drawSkewLetter(movement + 10, 16, 1, 0, 'P');
-    matrix.drawSkewLetter(movement + 20, 16, 1, 0, 'L');
-    matrix.drawSkewLetter(movement + 30, 16, 1, 0, 'A');
-    matrix.drawSkewLetter(movement + 40, 16, 1, 0, 'Y');
-    matrix.drawSkewLetter(movement + 50, 16, 1, 0, 'S');
+    matrix.drawSkewLetter(movement, 4, 1, 0, 'S');
+    matrix.drawSkewLetter(movement + 10, 4, 1, 0, 'P');
+    matrix.drawSkewLetter(movement + 20, 4, 1, 0, 'E');
+    matrix.drawSkewLetter(movement + 30, 4, 1, 0, 'C');
+    matrix.drawSkewLetter(movement + 40, 4, 1, 0, 'C');
+    matrix.drawSkewLetter(movement + 50, 4, 1, 0, 'Y');
+    matrix.drawSkewLetter(movement + 10, 12, 1, 0, 'P');
+    matrix.drawSkewLetter(movement + 20, 12, 1, 0, 'L');
+    matrix.drawSkewLetter(movement + 30, 12, 1, 0, 'A');
+    matrix.drawSkewLetter(movement + 40, 12, 1, 0, 'Y');
+    matrix.drawSkewLetter(movement + 50, 12, 1, 0, 'S');
     matrix.sendScreenBuffer();
     delay(30);
 
